@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>통합 프로파일 | 고려대학교 대학원 역량관리시스템</title>
+<style>:root{
+  --background:#fafafa;--foreground:#242424;--card:#fff;--border:#e8e8e8;--input:#e8e8e8;
+  --primary:#7E191B;--primary-d:#5e1214;--primary-fg:#fff;--primary-10:rgba(126,25,27,.08);
+  --secondary:#f5f0f0;--muted:#f5f0f0;--muted-fg:#6b5a5a;--sub:#6b7280;
+  --destructive:#B23A3C;
+  --c1:#7E191B;--c2:#9C2A2C;--c3:#B23A3C;--c4:#C86A6C;--c5:#E5B3B4;
+  --blue:#2563eb;--green:#16a34a;--amber:#d97706;--indigo:#4f46e5;--teal:#0d9488;--rose:#e11d48;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-color:var(--border)}
+html{font-size:15px}
+body{font-family:'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;background:var(--background);color:var(--foreground);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1{font-size:20px;font-weight:700} h2{font-size:17px;font-weight:700} h3{font-size:15px;font-weight:700}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i.sm{width:14px;height:14px} svg.i.lg{width:22px;height:22px}
+
+/* ── admin shell ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:272px;flex:none;background:#fff;border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar .logo{height:64px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border)}
+.sidebar .logo img{height:36px}
+.sidebar nav{padding:24px 12px;display:flex;flex-direction:column;gap:10px}
+.menu-btn{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 16px;border:0;background:none;border-radius:8px;font-size:15.5px;font-weight:600;color:#262626;text-align:left}
+.menu-btn:hover{background:var(--secondary)}
+.menu-btn.active{background:var(--secondary);color:var(--primary)}
+.menu-btn .grow{flex:1}
+.menu-btn .chev{width:16px;height:16px;color:#9a8a8a;transition:.2s}
+.menu-group.open .chev{transform:rotate(180deg)}
+.submenu{display:none;margin:6px 0 0 24px;padding-left:16px;border-left:1px solid var(--border);flex-direction:column;gap:6px}
+.menu-group.open .submenu{display:flex}
+.submenu a{display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:6px;font-size:14.5px;color:#444}
+.submenu a:hover{background:var(--secondary)}
+.submenu a.active{background:var(--secondary);color:var(--primary);font-weight:700}
+.new-dot{font-size:10px;font-weight:700;color:#fff;background:var(--primary);border-radius:999px;padding:1px 6px;margin-left:auto}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.header{height:64px;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.header .t{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700}
+.header .t svg{color:var(--primary);width:24px;height:24px}
+.header .r{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.page{padding:28px 32px;display:flex;flex-direction:column;gap:22px;max-width:1500px;width:100%}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.page-head p{color:var(--sub);font-size:14px;margin-top:4px}
+
+/* ── primitives ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.card-h{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.card-h h3{display:flex;align-items:center;gap:8px}
+.card-h .desc{font-size:12.5px;color:var(--sub);font-weight:400}
+.card-b{padding:20px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+.g-21{grid-template-columns:2fr 1fr} .g-12{grid-template-columns:1fr 2fr} .g-32{grid-template-columns:3fr 2fr}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.spacer{flex:1}
+.kpi{display:flex;align-items:center;gap:14px;padding:18px 20px}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .l{font-size:12.5px;color:var(--sub)} .kpi .v{font-size:25px;font-weight:700;line-height:1.2} .kpi .s{font-size:12px;color:var(--sub)}
+.bg-p{background:var(--primary-10);color:var(--primary)} .bg-b{background:#eff6ff;color:var(--blue)} .bg-g{background:#f0fdf4;color:var(--green)} .bg-a{background:#fffbeb;color:var(--amber)} .bg-i{background:#eef2ff;color:var(--indigo)} .bg-t{background:#f0fdfa;color:var(--teal)} .bg-r{background:#fff1f2;color:var(--rose)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:#333}
+.btn:hover{background:var(--secondary)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff} .btn.pri:hover{background:var(--primary-d)}
+.btn.sm{height:30px;padding:0 10px;font-size:12.5px} .btn.xs{height:26px;padding:0 8px;font-size:12px}
+.btn.dash{border-style:dashed;border-color:rgba(126,25,27,.4);color:var(--primary)}
+.btn.danger{color:var(--destructive)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.input,.select,textarea.input{height:36px;border:1px solid var(--input);border-radius:8px;background:#fff;padding:0 12px;font-size:13.5px;font-family:inherit;color:inherit;min-width:0}
+textarea.input{height:auto;padding:8px 12px;width:100%;resize:vertical}
+.input:focus,.select:focus{outline:2px solid rgba(126,25,27,.25);border-color:var(--primary)}
+.select{padding-right:28px}
+.field{display:flex;flex-direction:column;gap:5px} .field label{font-size:12.5px;font-weight:600;color:#555}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--border);padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-gr{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}.b-am{background:#fffbeb;color:#b45309;border-color:#fde68a}.b-bl{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.b-rd{background:#fef2f2;color:#b91c1c;border-color:#fecaca}.b-gy{background:#f3f4f6;color:#4b5563;border-color:#e5e7eb}.b-in{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}.b-pu{background:#faf5ff;color:#7e22ce;border-color:#e9d5ff}.b-pr{background:var(--primary-10);color:var(--primary);border-color:rgba(126,25,27,.25)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;background:#f1ecec;padding:6px;border-radius:10px}
+.tab{display:flex;align-items:center;gap:8px;border:0;background:none;border-radius:7px;padding:9px 18px;font-size:14.5px;font-weight:600;color:#555}
+.tab:hover{background:rgba(255,255,255,.6)}
+.tab.on{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.pane{display:none;flex-direction:column;gap:20px} .pane.on{display:flex}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff}
+.tbl th{background:#f7f3f3;text-align:left;font-weight:600;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:13px}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover{background:#fbf8f8}
+.tbl .c{text-align:center} .tbl .r{text-align:right}
+.tbl tr.sel{background:var(--primary-10)}
+.muted{color:var(--sub)} .small{font-size:12.5px} .bold{font-weight:700} .pri-c{color:var(--primary)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.55}
+.note.info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.note.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.note.pri{background:var(--primary-10);color:var(--primary-d);border:1px solid rgba(126,25,27,.2)}
+.note.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.bar{height:8px;border-radius:99px;background:#eee;overflow:hidden;position:relative}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.bar-row{display:grid;grid-template-columns:130px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.bar-row .n{color:#444} .bar-row .v{text-align:right;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#555}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart svg{width:100%;height:auto;display:block}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.chk input{accent-color:var(--primary);width:16px;height:16px}
+.divider{height:1px;background:var(--border)}
+.steps{display:flex;gap:0;flex-wrap:wrap}
+.step{flex:1;min-width:150px;padding:12px 14px;border:1px solid var(--border);background:#fff;position:relative;font-size:13px}
+.step:first-child{border-radius:8px 0 0 8px}.step:last-child{border-radius:0 8px 8px 0}
+.step .n{font-size:11px;font-weight:700;color:var(--sub)} .step b{display:block;margin:2px 0}
+.step.done{background:#f0fdf4;border-color:#bbf7d0}.step.cur{background:var(--primary-10);border-color:rgba(126,25,27,.35)}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:22px}
+.timeline:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:#e5dede}
+.tl{position:relative;padding:0 0 16px}
+.tl:before{content:"";position:absolute;left:-21px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.tl.admin:before{border-color:var(--blue)} .tl.sys:before{border-color:#9ca3af}
+.tl .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.tl .b{font-size:13px;color:#444;margin-top:3px;background:#faf7f7;border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.pager{display:flex;gap:4px;justify-content:center}
+.pager button{min-width:30px;height:30px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12.5px}
+.pager button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.proto{position:fixed;right:14px;bottom:14px;z-index:60;background:rgba(36,36,36,.88);color:#fff;font-size:11.5px;padding:6px 12px;border-radius:99px}
+
+/* modal / drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:12px;width:min(780px,100%);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal.lg{width:min(1000px,100%)}
+.modal-h{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-b{padding:20px 22px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.x{border:0;background:none;font-size:22px;line-height:1;color:#777}
+.toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);background:#262626;color:#fff;padding:10px 18px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.switch{position:relative;width:38px;height:22px;display:inline-block}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#d4d4d4;border-radius:99px;transition:.2s;cursor:pointer}
+.switch span:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+span{background:var(--primary)} .switch input:checked+span:before{transform:translateX(16px)}
+
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g-21,.g-12,.g-32{grid-template-columns:1fr}.sidebar{display:none}.page{padding:20px 16px}.header{padding:0 16px}}
+@media(max-width:700px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><img src="../public/images/logo_on.png" alt="고려대학교 로고"></div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <div class="main">
+    <header class="header">
+      <div class="t"><span data-i="layers"></span>통합 프로파일 (핵심역량·학습연구역량·진로 트랙)</div>
+      <div class="r">
+        <a class="btn sm" href="learner-mypage.html">사용자모드로 전환</a>
+        <span style="position:relative;display:flex"><span data-i="bell"></span><i style="position:absolute;right:0;top:0;width:8px;height:8px;border-radius:50%;background:var(--destructive)"></i></span>
+        <div class="row" style="gap:8px"><div class="avatar">관</div><div style="line-height:1.2"><b style="font-size:13px">관리자</b><div class="muted" style="font-size:11.5px">admin@korea.ac.kr</div></div></div>
+      </div>
+    </header>
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>통합 프로파일</h1>
+          <p>핵심역량 · 학습연구역량 · 진로 트랙 3종 진단 결과를 통합 관리하고, 학생 1인 단위 비교·분석과 학과·과정·입학연도별 통계를 제공합니다.</p>
+        </div>
+        <div class="row">
+          <select class="select"><option>2026학년도 2학기</option><option>2026학년도 1학기</option><option>2025학년도 2학기</option></select>
+          <button class="btn" onclick="toast('통합 프로파일 통계 엑셀을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>엑셀 다운로드</button>
+        </div>
+      </div>
+
+      <div class="tabs" data-tabs="#panes">
+        <button class="tab on" data-pane="t-dash"><span data-i="dash"></span>3종 결과 대시보드</button>
+        <button class="tab" data-pane="t-stat"><span data-i="filter"></span>기준별 통합 통계</button>
+        <button class="tab" data-pane="t-one"><span data-i="user"></span>학생 통합 프로파일링</button>
+      </div>
+
+      <div id="panes">
+      <!-- 3종 대시보드 -->
+      <section class="pane on" id="t-dash">
+        <div class="grid g4">
+          <div class="card kpi"><div class="ic bg-p"><span data-i="users" data-c="lg"></span></div><div><div class="l">3종 모두 완료</div><div class="v">94명</div><div class="s">재학생의 50.5%</div></div></div>
+          <div class="card kpi"><div class="ic bg-b"><span data-i="bar" data-c="lg"></span></div><div><div class="l">핵심역량 진단 완료</div><div class="v">141명</div><div class="s">응시율 75.8%</div></div></div>
+          <div class="card kpi"><div class="ic bg-g"><span data-i="book" data-c="lg"></span></div><div><div class="l">학습연구역량 진단 완료</div><div class="v">136명</div><div class="s">응시율 73.1%</div></div></div>
+          <div class="card kpi"><div class="ic bg-a"><span data-i="compass" data-c="lg"></span></div><div><div class="l">진로 트랙 검사 완료</div><div class="v">128명</div><div class="s">응시율 68.8%</div></div></div>
+        </div>
+        <div class="grid g3">
+          <div class="card">
+            <div class="card-h"><h3><span data-i="bar" data-c="sm" style="color:var(--blue)"></span>핵심역량</h3><span class="badge b-bl">평균 71.4점</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:10px" id="d1"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3><span data-i="book" data-c="sm" style="color:var(--green)"></span>학습연구역량</h3><span class="badge b-gr">평균 74.8점</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:10px" id="d2"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3><span data-i="compass" data-c="sm" style="color:var(--amber)"></span>진로 트랙</h3><span class="badge b-am">6개 트랙</span></div>
+            <div class="card-b"><div id="dDonut" class="chart"></div><div class="legend" id="dLg" style="justify-content:center;margin-top:8px"></div></div>
+          </div>
+        </div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3>진단 회차별 평균 추이</h3><span class="desc">핵심역량 · 학습연구역량</span></div><div class="card-b chart" id="dTrend"></div><div class="legend" style="padding:0 20px 16px"><span><i style="background:#2563eb"></i>핵심역량</span><span><i style="background:#16a34a"></i>학습연구역량</span></div></div>
+          <div class="card"><div class="card-h"><h3>3종 진단 참여 현황</h3></div><div class="card-b" id="dPart" style="display:flex;flex-direction:column;gap:14px"></div></div>
+        </div>
+      </section>
+
+      <!-- 기준별 통계 -->
+      <section class="pane" id="t-stat">
+        <div class="card"><div class="card-b row">
+          <b>집계 기준</b>
+          <div class="tabs" id="gb" style="padding:4px">
+            <button class="tab on" data-g="dept" style="padding:6px 14px;font-size:13.5px">학과별</button>
+            <button class="tab" data-g="prog" style="padding:6px 14px;font-size:13.5px">과정별</button>
+            <button class="tab" data-g="year" style="padding:6px 14px;font-size:13.5px">입학연도별</button>
+          </div>
+          <span class="muted small">필터</span>
+          <select class="select" id="sfProg"><option value="">전체 과정</option><option>석사</option><option>박사</option><option>통합</option></select>
+          <select class="select" id="sfYear"><option value="">전체 입학연도</option><option>2023</option><option>2024</option><option>2025</option></select>
+          <select class="select" id="sfDept"><option value="">전체 학과</option></select>
+        </div></div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3 id="stTitle">학과별 3종 평균 비교</h3></div><div class="card-b chart" id="stChart"></div>
+            <div class="legend" style="padding:0 20px 16px"><span><i style="background:#2563eb"></i>핵심역량</span><span><i style="background:#16a34a"></i>학습연구역량</span><span><i style="background:#d97706"></i>진로 트랙 적합도</span></div></div>
+          <div class="card"><div class="card-h"><h3>요약</h3></div><div class="card-b" id="stSum" style="display:flex;flex-direction:column;gap:10px"></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>통합 프로파일 통계표</h3><span class="desc">행을 클릭하면 해당 집단의 학생 목록이 아래에 표시됩니다</span></div>
+          <div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th id="stTh">학과</th><th class="c">학생 수</th><th class="c">3종 완료</th><th class="c">완료율</th><th class="c">핵심역량 평균</th><th class="c">학습연구역량 평균</th><th class="c">진로 트랙 적합도</th><th>주요 진로 트랙</th><th>공통 강점</th><th>공통 보완점</th></tr></thead><tbody id="stBody"></tbody></table></div></div></div>
+      </section>
+
+      <!-- 개별 통합 프로파일 -->
+      <section class="pane" id="t-one">
+        <div class="grid" style="grid-template-columns:290px 1fr;align-items:start">
+          <div class="card" style="position:sticky;top:80px">
+            <div class="card-h" style="padding:12px 14px"><input class="input" id="oq" placeholder="이름·학번 검색" style="width:100%"></div>
+            <div id="oList" style="max-height:640px;overflow:auto"></div>
+          </div>
+          <div id="oMain" style="display:flex;flex-direction:column;gap:18px;min-width:0"></div>
+        </div>
+      </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+<div class="proto">UI 시안 · 샘플 데이터</div>
+<script>/* ── helpers shared by all mock screens ── */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+function initTabs(root=document){
+  $$('[data-tabs]',root).forEach(g=>{
+    const tabs=$$('.tab',g), scope=document.querySelector(g.dataset.tabs);
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.toggle('on',x===t));
+      $$(':scope > .pane',scope).forEach(p=>p.classList.toggle('on',p.id===t.dataset.pane));
+      window.scrollTo({top:0});
+    }));
+  });
+}
+function openModal(id){$('#'+id).classList.add('on')}
+function closeModal(id){$('#'+id).classList.remove('on')}
+document.addEventListener('click',e=>{
+  if(e.target.classList&&e.target.classList.contains('overlay'))e.target.classList.remove('on');
+  const mb=e.target.closest('.menu-group>.menu-btn'); if(mb)mb.parentElement.classList.toggle('open');
+});
+function ic(n,c=''){const p={
+ dash:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>',
+ trend:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+ bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+ user:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
+ chev:'<polyline points="6 9 12 15 18 9"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+ compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+ layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+ grad:'<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+ mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',
+ send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+ up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+ check:'<polyline points="20 6 9 17 4 12"/>', clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+ eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+ refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/>',
+ print:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+ flask:'<path d="M10 2v7.5L4 20a1 1 0 0 0 .9 1.5h14.2a1 1 0 0 0 .9-1.5L14 9.5V2"/><path d="M8.5 2h7"/>',
+ award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/>',
+ brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+ target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ hist:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+ trash:'<path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
+ star:'<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>',
+ filter:'<polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"/>'
+}[n]||'';return `<svg class="i ${c}" viewBox="0 0 24 24">${p}</svg>`}
+function hydrateIcons(){$$('[data-i]').forEach(e=>{e.outerHTML=ic(e.dataset.i,e.dataset.c||'')})}
+
+/* radar chart (SVG) — series:[{name,color,values[]}] */
+function radar(el,labels,series,opt={}){
+  const S=opt.size||360,cx=S/2,cy=S/2,R=S/2-62,n=labels.length,max=opt.max||100,rings=[20,40,60,80,100];
+  const pt=(i,v)=>{const a=-Math.PI/2+2*Math.PI*i/n;return[cx+R*v/max*Math.cos(a),cy+R*v/max*Math.sin(a)]};
+  let g='';rings.forEach(r=>{g+=`<polygon points="${labels.map((_,i)=>pt(i,r).join(',')).join(' ')}" fill="none" stroke="#e5dede" stroke-width="1"/>`;
+    g+=`<text x="${cx+3}" y="${cy-R*r/max+10}" font-size="9" fill="#aaa">${r}</text>`});
+  labels.forEach((l,i)=>{const[x,y]=pt(i,max),[lx,ly]=pt(i,max+14);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5dede"/>`;
+    const anc=Math.abs(lx-cx)<8?'middle':lx>cx?'start':'end';g+=`<text x="${lx}" y="${ly+4}" font-size="11.5" font-weight="600" fill="#444" text-anchor="${anc}">${l}</text>`});
+  series.forEach(s=>{const p=s.values.map((v,i)=>pt(i,v).join(',')).join(' ');
+    g+=`<polygon points="${p}" fill="${s.color}" fill-opacity="${s.fill??.18}" stroke="${s.color}" stroke-width="2" ${s.dash?'stroke-dasharray="5 4"':''}/>`;
+    if(!s.dash)s.values.forEach((v,i)=>{const[x,y]=pt(i,v);g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${s.color}"/>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* grouped vertical bars — data:[{label,values[]}], colors[] */
+function bars(el,data,colors,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=34,B=34,T=14,max=opt.max||100,gw=(W-L-10)/data.length,k=colors.length,bw=Math.min(28,(gw-16)/k);
+  let g='';[0,25,50,75,100].filter(v=>v<=max||v===0).forEach(v=>{const y=T+(H-T-B)*(1-v/max);g+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}</text>`});
+  data.forEach((d,i)=>{const x0=L+gw*i+(gw-bw*k-(k-1)*3)/2;d.values.forEach((v,j)=>{const h=(H-T-B)*v/max,x=x0+j*(bw+3),y=H-B-h;
+    g+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" fill="${colors[j]}"><title>${d.label}: ${v}</title></rect>`;
+    if(opt.val!==false)g+=`<text x="${x+bw/2}" y="${y-4}" font-size="10" font-weight="600" fill="#444" text-anchor="middle">${v}</text>`});
+    g+=`<text x="${L+gw*i+gw/2}" y="${H-12}" font-size="11" fill="#555" text-anchor="middle">${d.label}</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* line chart — x labels, series:[{name,color,values[]}] */
+function lines(el,xs,series,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=36,R=16,B=32,T=14,max=opt.max||100,min=opt.min||0,sx=i=>L+(W-L-R)*i/(xs.length-1||1),sy=v=>T+(H-T-B)*(1-(v-min)/(max-min));
+  let g='';const step=(max-min)/4;for(let k=0;k<=4;k++){const v=min+step*k,y=sy(v);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}${opt.unit||''}</text>`}
+  xs.forEach((x,i)=>g+=`<text x="${sx(i)}" y="${H-10}" font-size="11" fill="#555" text-anchor="middle">${x}</text>`);
+  series.forEach(s=>{g+=`<polyline fill="none" stroke="${s.color}" stroke-width="2.5" points="${s.values.map((v,i)=>sx(i)+','+sy(v)).join(' ')}"/>`;
+    s.values.forEach((v,i)=>{g+=`<circle cx="${sx(i)}" cy="${sy(v)}" r="4" fill="#fff" stroke="${s.color}" stroke-width="2.5"><title>${s.name} ${xs[i]}: ${v}</title></circle>`;if(opt.val!==false)g+=`<text x="${sx(i)}" y="${sy(v)-9}" font-size="10" font-weight="600" fill="${s.color}" text-anchor="middle">${v}${opt.unit||''}</text>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* donut — parts:[{name,v,color}] */
+function donut(el,parts,center){
+  const S=180,cx=90,cy=90,r=68,sw=26,tot=parts.reduce((a,b)=>a+b.v,0);let a0=-Math.PI/2,g='';
+  parts.forEach(p=>{const a1=a0+2*Math.PI*p.v/tot,l=a1-a0>Math.PI?1:0;
+    const d=`M${cx+r*Math.cos(a0)} ${cy+r*Math.sin(a0)} A${r} ${r} 0 ${l} 1 ${cx+r*Math.cos(a1-.0001)} ${cy+r*Math.sin(a1-.0001)}`;
+    g+=`<path d="${d}" fill="none" stroke="${p.color}" stroke-width="${sw}"><title>${p.name} ${p.v}</title></path>`;a0=a1});
+  g+=`<text x="${cx}" y="${cy-2}" font-size="22" font-weight="700" text-anchor="middle" fill="#242424">${center[0]}</text><text x="${cx}" y="${cy+16}" font-size="11" text-anchor="middle" fill="#888">${center[1]}</text>`;
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* admin shell */
+const ADMIN_MENU=[
+ {t:'대시보드',i:'dash',u:'#'},
+ {t:'대학원 성과지표',i:'trend',s:[['핵심성과지표'],['자율성과지표']]},
+ {t:'교육연구단 성과지표',i:'users',u:'#'},
+ {t:'게시판관리',i:'file',s:[['공지사항'],['자료실']]},
+ {t:'핵심역량진단',i:'bar',s:[['진단현황'],['버전관리'],['설문지관리']]},
+ {t:'진로 트랙 검사',i:'compass',s:[['검사 운영·문항 탑재','career-track'],['결과 대시보드','career-track']],isNew:1},
+ {t:'통합 프로파일',i:'layers',u:'integrated-profile',key:'profile',isNew:1},
+ {t:'졸업생 진로 추적',i:'grad',u:'graduate-tracking',key:'grad',isNew:1},
+ {t:'학생정보',i:'user',u:'#'}
+];
+function renderAdmin(active){
+  const html=ADMIN_MENU.map(m=>{
+    if(m.s){const open=m.key===active||m.s.some(x=>x[1]===active);
+      return `<div class="menu-group ${open?'open':''}"><button class="menu-btn">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}${ic('chev','chev')}</button><div class="submenu">${m.s.map((x,k)=>`<a href="${x[1]?x[1]+'.html':'#'}" class="${x[1]===active&&(k===0||x[1]!=='career-track')?(k===0?'active':''):''}">${x[0]}</a>`).join('')}</div></div>`}
+    const on=(m.u===active||m.key===active);
+    return `<a class="menu-btn ${on?'active':''}" href="${m.u&&m.u!=='#'?m.u+'.html':'#'}">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}</a>`}).join('');
+  $('#sidebar-nav').innerHTML=html}
+
+renderAdmin('profile');initTabs();
+const CORE=['논리적 추론','다학제간 통찰','독창적 발상','메타인지적 성찰','연구문제 구조화','증거기반 분석'];
+const LEARN=['학업적 효능감','학업적 회복탄력성','성실성 및 책임감','시간관리','집중력·학습환경','학습전략·정보처리'];
+const TRK=['학술연구형','산업 R&D형','창업·혁신형','정책·공공형','교육·전수형','전문직·컨설팅형'];
+const TDIM=['연구탐구','기술개발','사업개척','공공기여','교육전달','전문서비스'];
+const TCOL=['#7E191B','#2563eb','#d97706','#0d9488','#7c3aed','#16a34a'];
+const RAW=[
+ ['김민준','2024020001','경영학과','박사',2024,[68,58,55,62,69,71],[85,80,81,72,76,74],[82,60,48,55,66,58]],
+ ['이서연','2025010012','AI경영학과','석사',2025,[80,74,72,78,76,82],[90,86,88,80,84,86],[58,86,52,40,45,62]],
+ ['박현우','2023030007','데이터사이언스학과','통합',2023,[74,70,66,72,70,78],[79,75,70,66,72,78],[66,90,50,44,48,60]],
+ ['Wang Fang','2024020045','경영학과','박사',2024,[70,66,64,68,72,74],[72,70,76,64,66,70],[88,55,40,62,70,50]],
+ ['정하은','2025010023','마케팅학과','석사',2025,[62,66,78,60,58,60],[70,68,66,74,64,62],[50,46,80,52,60,84]],
+ ['오진석','2023020018','회계학과','박사',2023,[78,64,60,72,74,84],[84,82,88,78,80,82],[72,48,40,60,58,88]],
+ ['Nguyen Thi Mai','2025010034','국제경영학과','석사',2025,[72,76,70,66,68,72],[80,78,74,70,76,79],[55,60,76,58,52,82]],
+ ['최예진','2024010009','재무학과','석사',2024,[70,62,58,64,68,80],[76,74,78,69,71,73],[52,50,45,58,60,90]],
+ ['한승우','2024030002','경영정보학과','통합',2024,[66,72,74,62,70,68],[70,66,72,60,68,70],[60,84,66,44,40,58]],
+ ['유태현','2025020008','데이터사이언스학과','박사',2025,[82,78,76,80,84,86],[88,86,90,82,86,88],[70,88,60,50,46,64]],
+ ['Tanaka Yuki','2024020056','AI경영학과','박사',2024,[74,68,62,70,72,76],[78,70,66,64,70,72],[84,58,50,66,72,52]],
+ ['강수빈','2023010015','경영학과','석사',2023,[60,58,54,62,60,66],[68,72,70,60,66,64],[48,45,40,60,88,62]]
+].map(r=>({n:r[0],id:r[1],dept:r[2],prog:r[3],yr:r[4],core:r[5],learn:r[6],trk:r[7],
+  cs:Math.round(r[5].reduce((a,b)=>a+b)/6),ls:Math.round(r[6].reduce((a,b)=>a+b)/6),ts:Math.max(...r[7]),top:r[7].indexOf(Math.max(...r[7]))}));
+const avg=a=>Math.round(a.reduce((x,y)=>x+y,0)/(a.length||1));
+const lvl=s=>s>=85?['탁월','b-am']:s>=75?['우수','b-gr']:s>=65?['보통','b-bl']:['개선필요','b-rd'];
+const mask=n=>n.length<=2?n:n[0]+'*'.repeat(n.length-2)+n[n.length-1];
+
+/* 3종 대시보드 */
+const barRow=(n,v,c)=>`<div class="bar-row" style="grid-template-columns:110px 1fr 34px"><span class="n">${n}</span><div class="bar"><i style="width:${v}%;background:${c}"></i></div><span class="v">${v}</span></div>`;
+$('#d1').innerHTML=CORE.map((n,i)=>barRow(n,avg(RAW.map(s=>s.core[i])),'#2563eb')).join('');
+$('#d2').innerHTML=LEARN.map((n,i)=>barRow(n,avg(RAW.map(s=>s.learn[i])),'#16a34a')).join('');
+const tc=TRK.map((_,i)=>RAW.filter(s=>s.top===i).length);
+donut($('#dDonut'),TRK.map((n,i)=>({name:n,v:tc[i]||.0001,color:TCOL[i]})),[RAW.length,'표본(명)']);
+$('#dLg').innerHTML=TRK.map((n,i)=>`<span><i style="background:${TCOL[i]}"></i>${n} ${tc[i]}</span>`).join('');
+lines($('#dTrend'),['2025-1','2025-2','2026-1','2026-2'],[{name:'핵심역량',color:'#2563eb',values:[66,68,70,71]},{name:'학습연구역량',color:'#16a34a',values:[70,72,73,75]}],{min:50,max:90});
+$('#dPart').innerHTML=[['핵심역량 진단',141,'#2563eb'],['학습연구역량 진단',136,'#16a34a'],['진로 트랙 검사',128,'#d97706'],['3종 모두 완료',94,'#7E191B']].map(x=>`<div><div class="row small" style="justify-content:space-between"><b>${x[0]}</b><span>${x[1]} / 186명 (${Math.round(x[1]/186*100)}%)</span></div><div class="bar" style="margin-top:4px"><i style="width:${x[1]/186*100}%;background:${x[2]}"></i></div></div>`).join('')+'<div class="note info"><span data-i="info"></span><div>3종 중 하나라도 미완료인 학생은 통합 프로파일에서 <b>미응시 항목이 회색으로 표시</b>되며 해당 항목은 비교에서 제외됩니다.</div></div>';
+
+/* 기준별 통계 */
+const GK={dept:['학과','dept'],prog:['과정','prog'],year:['입학연도','yr']};let G='dept';
+[...new Set(RAW.map(s=>s.dept))].forEach(d=>$('#sfDept').insertAdjacentHTML('beforeend',`<option>${d}</option>`));
+function drawStat(){
+  const fp=$('#sfProg').value,fy=$('#sfYear').value,fd=$('#sfDept').value;
+  const L=RAW.filter(s=>(!fp||s.prog===fp)&&(!fy||String(s.yr)===fy)&&(!fd||s.dept===fd)),k=GK[G][1];
+  const groups={};L.forEach(s=>(groups[s[k]]=groups[s[k]]||[]).push(s));
+  const rows=Object.entries(groups).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).map(([g,a])=>{
+    const cs=avg(a.map(x=>x.cs)),ls=avg(a.map(x=>x.ls)),ts=avg(a.map(x=>x.ts));
+    const cnt=TRK.map((_,i)=>a.filter(x=>x.top===i).length),ti=cnt.indexOf(Math.max(...cnt));
+    const ci=CORE.map((_,i)=>avg(a.map(x=>x.core[i]))),li=LEARN.map((_,i)=>avg(a.map(x=>x.learn[i])));
+    const all=[...CORE.map((n,i)=>[n,ci[i]]),...LEARN.map((n,i)=>[n,li[i]])].sort((x,y)=>y[1]-x[1]);
+    return{g,n:a.length,done:a.length-(String(g).length%2),cs,ls,ts,ti,top:all.slice(0,1)[0][0],low:all[all.length-1][0],arr:a}});
+  $('#stTitle').textContent=GK[G][0]+'별 3종 평균 비교';$('#stTh').textContent=GK[G][0];
+  bars($('#stChart'),rows.map(r=>({label:String(r.g).replace('데이터사이언스학과','데이터사이언스').replace('학과','').replace('AI경영','AI경영'),values:[r.cs,r.ls,r.ts]})),['#2563eb','#16a34a','#d97706'],{w:Math.max(560,rows.length*110),h:250,val:rows.length<=6});
+  const best=[...rows].sort((a,b)=>(b.cs+b.ls)-(a.cs+a.ls))[0],worst=[...rows].sort((a,b)=>(a.cs+a.ls)-(b.cs+b.ls))[0];
+  $('#stSum').innerHTML=rows.length?`<div class="kpi" style="padding:0"><div class="ic bg-g"><span data-i="star" data-c="lg"></span></div><div><div class="l">역량 평균 최고 집단</div><div class="v" style="font-size:18px">${best.g}</div><div class="s">핵심 ${best.cs} · 학습연구 ${best.ls}</div></div></div><div class="divider"></div><div class="kpi" style="padding:0"><div class="ic bg-r"><span data-i="target" data-c="lg"></span></div><div><div class="l">보완 필요 집단</div><div class="v" style="font-size:18px">${worst.g}</div><div class="s">핵심 ${worst.cs} · 학습연구 ${worst.ls}</div></div></div><div class="divider"></div><div class="small muted">집계 대상 ${L.length}명 · 학번 단위 개인 식별정보는 통계 화면에 노출되지 않습니다. (집단 5명 미만은 비공개 처리 예정)</div>`:'<span class="muted">조건에 맞는 데이터가 없습니다</span>';
+  $('#stBody').innerHTML=rows.map((r,i)=>`<tr style="cursor:pointer" onclick="pickGroup(${i})"><td class="bold">${r.g}${G==='year'?'학년도':''}</td><td class="c">${r.n}</td><td class="c">${r.done}</td><td class="c">${Math.round(r.done/r.n*100)}%</td><td class="c">${r.cs} <span class="badge ${lvl(r.cs)[1]}">${lvl(r.cs)[0]}</span></td><td class="c">${r.ls} <span class="badge ${lvl(r.ls)[1]}">${lvl(r.ls)[0]}</span></td><td class="c">${r.ts}</td><td><span class="badge" style="background:${TCOL[r.ti]}15;color:${TCOL[r.ti]};border-color:${TCOL[r.ti]}55">${TRK[r.ti]}</span></td><td class="small">${r.top}</td><td class="small">${r.low}</td></tr>`).join('')||'<tr><td colspan="10" class="c muted" style="padding:24px">데이터 없음</td></tr>';
+  window._rows=rows;hydrateIcons();
+}
+function pickGroup(i){const r=_rows[i];toast(r.g+' 집단 '+r.n+'명 — 학생 통합 프로파일 탭에서 개별 조회할 수 있습니다');}
+$$('#gb .tab').forEach(b=>b.onclick=()=>{$$('#gb .tab').forEach(x=>x.classList.toggle('on',x===b));G=b.dataset.g;drawStat()});
+['sfProg','sfYear','sfDept'].forEach(i=>$('#'+i).onchange=drawStat);drawStat();
+
+/* 개별 통합 프로파일 */
+let CUR=0;
+function drawList(){const q=$('#oq').value.trim().toLowerCase();$('#oList').innerHTML=RAW.map((s,i)=>({s,i})).filter(o=>!q||o.s.n.toLowerCase().includes(q)||o.s.id.includes(q)).map(o=>`<div onclick="CUR=${o.i};drawList();drawOne()" style="padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;${o.i===CUR?'background:var(--primary-10);border-left:3px solid var(--primary)':''}"><div class="row" style="justify-content:space-between"><b>${o.s.n}</b><span class="badge b-gy">${o.s.prog}</span></div><div class="muted small">${o.s.dept} · ${o.s.id}</div></div>`).join('')}
+$('#oq').oninput=drawList;
+function scoreCard(t,ic,col,s,a,sub){const l=lvl(s);return`<div class="card kpi" style="align-items:flex-start"><div class="ic ${col}"><span data-i="${ic}" data-c="lg"></span></div><div style="flex:1"><div class="l">${t}</div><div class="row" style="gap:8px"><span class="v">${s}</span><span class="badge ${l[1]}">${l[0]}</span></div><div class="s">${sub}</div></div></div>`}
+function cmpBars(names,vals,avgs,col){return names.map((n,i)=>{const d=vals[i]-avgs[i];return`<div style="display:grid;grid-template-columns:120px 1fr 34px 46px;gap:10px;align-items:center;font-size:13px"><span>${n}</span><div class="bar" style="overflow:visible"><i style="width:${vals[i]}%;background:${col}"></i><u title="학과 평균 ${avgs[i]}" style="position:absolute;left:${avgs[i]}%;top:-3px;width:2px;height:14px;background:#333"></u></div><b style="text-align:right">${vals[i]}</b><span class="small" style="color:${d>=0?'#15803d':'#b91c1c'};font-weight:600">${d>=0?'+':''}${d}</span></div>`}).join('')}
+function drawOne(){
+  const s=RAW[CUR],peers=RAW.filter(x=>x.dept===s.dept),pc=CORE.map((_,i)=>avg(peers.map(x=>x.core[i]))),pl=LEARN.map((_,i)=>avg(peers.map(x=>x.learn[i])));
+  const all=[...CORE.map((n,i)=>({n,v:s.core[i],g:'핵심역량'})),...LEARN.map((n,i)=>({n,v:s.learn[i],g:'학습연구역량'}))].sort((a,b)=>b.v-a.v);
+  const st=all.slice(0,3),wk=all.slice(-3).reverse();
+  const t2=[...s.trk.map((v,i)=>({v,i}))].sort((a,b)=>b.v-a.v);
+  $('#oMain').innerHTML=`
+  <div class="card"><div class="card-b row" style="gap:16px"><div class="avatar" style="width:52px;height:52px;font-size:20px">${s.n[0]}</div><div><div class="row"><h2>${s.n}</h2><span class="badge b-gy">${s.prog}</span><span class="badge b-gr">재학</span></div><div class="muted small">${s.dept} · ${s.id} · ${s.yr}학년도 입학</div></div><span class="spacer"></span><button class="btn" onclick="toast('통합 프로파일 PDF를 생성합니다')"><span data-i="print" data-c="sm"></span>PDF 출력</button></div></div>
+  <div class="grid g3">${scoreCard('핵심역량','bar','bg-b',s.cs,0,'학과 평균 '+avg(peers.map(x=>x.cs))+'점 · 진단일 2026-10-02')}${scoreCard('학습연구역량','book','bg-g',s.ls,0,'학과 평균 '+avg(peers.map(x=>x.ls))+'점 · 진단일 2026-10-05')}
+   <div class="card kpi" style="align-items:flex-start"><div class="ic bg-a"><span data-i="compass" data-c="lg"></span></div><div style="flex:1"><div class="l">진로 트랙 (1순위)</div><div class="row" style="gap:8px"><span class="v" style="font-size:19px;color:${TCOL[t2[0].i]}">${TRK[t2[0].i]}</span></div><div class="s">적합도 ${t2[0].v}점 · 2순위 ${TRK[t2[1].i]}</div></div></div></div>
+  <div class="grid g2">
+    <div class="card"><div class="card-h"><h3>핵심역량 ↔ 학습연구역량 프로파일</h3><span class="desc">하위 6개 항목 · 점선=학과 평균</span></div><div class="card-b grid g2" style="gap:0"><div><div class="small bold" style="text-align:center;color:#2563eb">핵심역량</div><div class="chart" id="rd1"></div></div><div><div class="small bold" style="text-align:center;color:#16a34a">학습연구역량</div><div class="chart" id="rd1b"></div></div></div></div>
+    <div class="card"><div class="card-h"><h3>진로 트랙 프로파일</h3><span class="desc">6개 영역 적합도</span></div><div class="card-b chart" id="rd2"></div><div class="legend" style="justify-content:center;padding-bottom:14px"><span><i style="background:#d97706"></i>${s.n}</span><span><i style="background:#999"></i>전체 평균</span></div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><div class="card-h"><h3>핵심역량 상세</h3><span class="desc">▍= 학과 평균 · 우측 증감</span></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">${cmpBars(CORE,s.core,pc,'#2563eb')}</div></div>
+    <div class="card"><div class="card-h"><h3>학습연구역량 상세</h3><span class="desc">▍= 학과 평균 · 우측 증감</span></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">${cmpBars(LEARN,s.learn,pl,'#16a34a')}</div></div>
+  </div>
+  <div class="card"><div class="card-h"><h3>3종 진단 통합 비교 · 강점과 보완점</h3><span class="desc">점수 기준 상·하위 항목과 진로 트랙 연계 해석</span></div>
+   <div class="card-b grid g3">
+    <div><div class="row bold" style="color:#15803d;margin-bottom:8px"><span data-i="star" data-c="sm"></span>강점 (상위 3)</div>${st.map(x=>`<div class="note ok" style="margin-bottom:8px;justify-content:space-between"><span><b>${x.n}</b> <span class="small">(${x.g})</span></span><b>${x.v}</b></div>`).join('')}</div>
+    <div><div class="row bold" style="color:#b91c1c;margin-bottom:8px"><span data-i="target" data-c="sm"></span>보완점 (하위 3)</div>${wk.map(x=>`<div class="note" style="margin-bottom:8px;justify-content:space-between;background:#fef2f2;border:1px solid #fecaca;color:#991b1b"><span><b>${x.n}</b> <span class="small">(${x.g})</span></span><b>${x.v}</b></div>`).join('')}</div>
+    <div><div class="row bold" style="color:var(--primary);margin-bottom:8px"><span data-i="compass" data-c="sm"></span>진로 트랙 연계 해석</div><div class="note pri" style="flex-direction:column;gap:6px"><div><b>${TRK[t2[0].i]}</b> 트랙은 <b>${TDIM[t2[0].i]}</b> 영역이 핵심입니다.</div><div class="small">강점 <b>${st[0].n}</b> 은(는) 해당 트랙의 핵심 역량과 ${t2[0].i<2?'직접':'간접'} 연계됩니다. 보완점 <b>${wk[0].n}</b> 향상 프로그램을 권장합니다.</div></div></div>
+   </div></div>
+  <div class="card"><div class="card-h"><h3>진단 이력 (회차별 점수)</h3></div><div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>진단 회차</th><th class="c">핵심역량</th><th class="c">학습연구역량</th><th class="c">진로 트랙(1순위)</th><th>진단일</th></tr></thead><tbody>
+    <tr><td>2026학년도 2학기</td><td class="c bold">${s.cs}</td><td class="c bold">${s.ls}</td><td class="c">${TRK[t2[0].i]}</td><td class="muted">2026-10-05</td></tr>
+    <tr><td>2026학년도 1학기</td><td class="c">${s.cs-3}</td><td class="c">${s.ls-2}</td><td class="c muted">-</td><td class="muted">2026-04-11</td></tr>
+    <tr><td>2025학년도 2학기</td><td class="c">${s.cs-6}</td><td class="c">${s.ls-4}</td><td class="c muted">-</td><td class="muted">2025-10-09</td></tr></tbody></table></div></div></div>`;
+  radar($('#rd1'),CORE.map(n=>n.slice(0,6)),[{name:'학과평균',color:'#999',values:pc,dash:1,fill:0},{name:'핵심',color:'#2563eb',values:s.core}],{size:300});radar($('#rd1b'),LEARN.map(n=>n.slice(0,6)),[{name:'학과평균',color:'#999',values:pl,dash:1,fill:0},{name:'학습',color:'#16a34a',values:s.learn}],{size:300});
+  radar($('#rd2'),TDIM,[{name:'전체',color:'#999',values:TDIM.map((_,i)=>avg(RAW.map(x=>x.trk[i]))),dash:1,fill:0},{name:s.n,color:'#d97706',values:s.trk,fill:.25}],{size:340});
+  hydrateIcons();
+}
+drawList();drawOne();
+
+hydrateIcons();</script>
+</body>
+</html>

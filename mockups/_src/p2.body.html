@@ -1,0 +1,80 @@
+      <div class="page-head">
+        <div>
+          <h1>통합 프로파일</h1>
+          <p>핵심역량 · 학습연구역량 · 진로 트랙 3종 진단 결과를 통합 관리하고, 학생 1인 단위 비교·분석과 학과·과정·입학연도별 통계를 제공합니다.</p>
+        </div>
+        <div class="row">
+          <select class="select"><option>2026학년도 2학기</option><option>2026학년도 1학기</option><option>2025학년도 2학기</option></select>
+          <button class="btn" onclick="toast('통합 프로파일 통계 엑셀을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>엑셀 다운로드</button>
+        </div>
+      </div>
+
+      <div class="tabs" data-tabs="#panes">
+        <button class="tab on" data-pane="t-dash"><span data-i="dash"></span>3종 결과 대시보드</button>
+        <button class="tab" data-pane="t-stat"><span data-i="filter"></span>기준별 통합 통계</button>
+        <button class="tab" data-pane="t-one"><span data-i="user"></span>학생 통합 프로파일링</button>
+      </div>
+
+      <div id="panes">
+      <!-- 3종 대시보드 -->
+      <section class="pane on" id="t-dash">
+        <div class="grid g4">
+          <div class="card kpi"><div class="ic bg-p"><span data-i="users" data-c="lg"></span></div><div><div class="l">3종 모두 완료</div><div class="v">94명</div><div class="s">재학생의 50.5%</div></div></div>
+          <div class="card kpi"><div class="ic bg-b"><span data-i="bar" data-c="lg"></span></div><div><div class="l">핵심역량 진단 완료</div><div class="v">141명</div><div class="s">응시율 75.8%</div></div></div>
+          <div class="card kpi"><div class="ic bg-g"><span data-i="book" data-c="lg"></span></div><div><div class="l">학습연구역량 진단 완료</div><div class="v">136명</div><div class="s">응시율 73.1%</div></div></div>
+          <div class="card kpi"><div class="ic bg-a"><span data-i="compass" data-c="lg"></span></div><div><div class="l">진로 트랙 검사 완료</div><div class="v">128명</div><div class="s">응시율 68.8%</div></div></div>
+        </div>
+        <div class="grid g3">
+          <div class="card">
+            <div class="card-h"><h3><span data-i="bar" data-c="sm" style="color:var(--blue)"></span>핵심역량</h3><span class="badge b-bl">평균 71.4점</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:10px" id="d1"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3><span data-i="book" data-c="sm" style="color:var(--green)"></span>학습연구역량</h3><span class="badge b-gr">평균 74.8점</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:10px" id="d2"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3><span data-i="compass" data-c="sm" style="color:var(--amber)"></span>진로 트랙</h3><span class="badge b-am">6개 트랙</span></div>
+            <div class="card-b"><div id="dDonut" class="chart"></div><div class="legend" id="dLg" style="justify-content:center;margin-top:8px"></div></div>
+          </div>
+        </div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3>진단 회차별 평균 추이</h3><span class="desc">핵심역량 · 학습연구역량</span></div><div class="card-b chart" id="dTrend"></div><div class="legend" style="padding:0 20px 16px"><span><i style="background:#2563eb"></i>핵심역량</span><span><i style="background:#16a34a"></i>학습연구역량</span></div></div>
+          <div class="card"><div class="card-h"><h3>3종 진단 참여 현황</h3></div><div class="card-b" id="dPart" style="display:flex;flex-direction:column;gap:14px"></div></div>
+        </div>
+      </section>
+
+      <!-- 기준별 통계 -->
+      <section class="pane" id="t-stat">
+        <div class="card"><div class="card-b row">
+          <b>집계 기준</b>
+          <div class="tabs" id="gb" style="padding:4px">
+            <button class="tab on" data-g="dept" style="padding:6px 14px;font-size:13.5px">학과별</button>
+            <button class="tab" data-g="prog" style="padding:6px 14px;font-size:13.5px">과정별</button>
+            <button class="tab" data-g="year" style="padding:6px 14px;font-size:13.5px">입학연도별</button>
+          </div>
+          <span class="muted small">필터</span>
+          <select class="select" id="sfProg"><option value="">전체 과정</option><option>석사</option><option>박사</option><option>통합</option></select>
+          <select class="select" id="sfYear"><option value="">전체 입학연도</option><option>2023</option><option>2024</option><option>2025</option></select>
+          <select class="select" id="sfDept"><option value="">전체 학과</option></select>
+        </div></div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3 id="stTitle">학과별 3종 평균 비교</h3></div><div class="card-b chart" id="stChart"></div>
+            <div class="legend" style="padding:0 20px 16px"><span><i style="background:#2563eb"></i>핵심역량</span><span><i style="background:#16a34a"></i>학습연구역량</span><span><i style="background:#d97706"></i>진로 트랙 적합도</span></div></div>
+          <div class="card"><div class="card-h"><h3>요약</h3></div><div class="card-b" id="stSum" style="display:flex;flex-direction:column;gap:10px"></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>통합 프로파일 통계표</h3><span class="desc">행을 클릭하면 해당 집단의 학생 목록이 아래에 표시됩니다</span></div>
+          <div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th id="stTh">학과</th><th class="c">학생 수</th><th class="c">3종 완료</th><th class="c">완료율</th><th class="c">핵심역량 평균</th><th class="c">학습연구역량 평균</th><th class="c">진로 트랙 적합도</th><th>주요 진로 트랙</th><th>공통 강점</th><th>공통 보완점</th></tr></thead><tbody id="stBody"></tbody></table></div></div></div>
+      </section>
+
+      <!-- 개별 통합 프로파일 -->
+      <section class="pane" id="t-one">
+        <div class="grid" style="grid-template-columns:290px 1fr;align-items:start">
+          <div class="card" style="position:sticky;top:80px">
+            <div class="card-h" style="padding:12px 14px"><input class="input" id="oq" placeholder="이름·학번 검색" style="width:100%"></div>
+            <div id="oList" style="max-height:640px;overflow:auto"></div>
+          </div>
+          <div id="oMain" style="display:flex;flex-direction:column;gap:18px;min-width:0"></div>
+        </div>
+      </section>
+      </div>

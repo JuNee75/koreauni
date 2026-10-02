@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>학습자 마이페이지 | 고려대학교 대학원 역량관리시스템</title>
+<style>:root{
+  --background:#fafafa;--foreground:#242424;--card:#fff;--border:#e8e8e8;--input:#e8e8e8;
+  --primary:#7E191B;--primary-d:#5e1214;--primary-fg:#fff;--primary-10:rgba(126,25,27,.08);
+  --secondary:#f5f0f0;--muted:#f5f0f0;--muted-fg:#6b5a5a;--sub:#6b7280;
+  --destructive:#B23A3C;
+  --c1:#7E191B;--c2:#9C2A2C;--c3:#B23A3C;--c4:#C86A6C;--c5:#E5B3B4;
+  --blue:#2563eb;--green:#16a34a;--amber:#d97706;--indigo:#4f46e5;--teal:#0d9488;--rose:#e11d48;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-color:var(--border)}
+html{font-size:15px}
+body{font-family:'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;background:var(--background);color:var(--foreground);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1{font-size:20px;font-weight:700} h2{font-size:17px;font-weight:700} h3{font-size:15px;font-weight:700}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i.sm{width:14px;height:14px} svg.i.lg{width:22px;height:22px}
+
+/* ── admin shell ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:272px;flex:none;background:#fff;border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar .logo{height:64px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border)}
+.sidebar .logo img{height:36px}
+.sidebar nav{padding:24px 12px;display:flex;flex-direction:column;gap:10px}
+.menu-btn{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 16px;border:0;background:none;border-radius:8px;font-size:15.5px;font-weight:600;color:#262626;text-align:left}
+.menu-btn:hover{background:var(--secondary)}
+.menu-btn.active{background:var(--secondary);color:var(--primary)}
+.menu-btn .grow{flex:1}
+.menu-btn .chev{width:16px;height:16px;color:#9a8a8a;transition:.2s}
+.menu-group.open .chev{transform:rotate(180deg)}
+.submenu{display:none;margin:6px 0 0 24px;padding-left:16px;border-left:1px solid var(--border);flex-direction:column;gap:6px}
+.menu-group.open .submenu{display:flex}
+.submenu a{display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:6px;font-size:14.5px;color:#444}
+.submenu a:hover{background:var(--secondary)}
+.submenu a.active{background:var(--secondary);color:var(--primary);font-weight:700}
+.new-dot{font-size:10px;font-weight:700;color:#fff;background:var(--primary);border-radius:999px;padding:1px 6px;margin-left:auto}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.header{height:64px;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.header .t{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700}
+.header .t svg{color:var(--primary);width:24px;height:24px}
+.header .r{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.page{padding:28px 32px;display:flex;flex-direction:column;gap:22px;max-width:1500px;width:100%}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.page-head p{color:var(--sub);font-size:14px;margin-top:4px}
+
+/* ── primitives ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.card-h{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.card-h h3{display:flex;align-items:center;gap:8px}
+.card-h .desc{font-size:12.5px;color:var(--sub);font-weight:400}
+.card-b{padding:20px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+.g-21{grid-template-columns:2fr 1fr} .g-12{grid-template-columns:1fr 2fr} .g-32{grid-template-columns:3fr 2fr}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.spacer{flex:1}
+.kpi{display:flex;align-items:center;gap:14px;padding:18px 20px}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .l{font-size:12.5px;color:var(--sub)} .kpi .v{font-size:25px;font-weight:700;line-height:1.2} .kpi .s{font-size:12px;color:var(--sub)}
+.bg-p{background:var(--primary-10);color:var(--primary)} .bg-b{background:#eff6ff;color:var(--blue)} .bg-g{background:#f0fdf4;color:var(--green)} .bg-a{background:#fffbeb;color:var(--amber)} .bg-i{background:#eef2ff;color:var(--indigo)} .bg-t{background:#f0fdfa;color:var(--teal)} .bg-r{background:#fff1f2;color:var(--rose)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:#333}
+.btn:hover{background:var(--secondary)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff} .btn.pri:hover{background:var(--primary-d)}
+.btn.sm{height:30px;padding:0 10px;font-size:12.5px} .btn.xs{height:26px;padding:0 8px;font-size:12px}
+.btn.dash{border-style:dashed;border-color:rgba(126,25,27,.4);color:var(--primary)}
+.btn.danger{color:var(--destructive)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.input,.select,textarea.input{height:36px;border:1px solid var(--input);border-radius:8px;background:#fff;padding:0 12px;font-size:13.5px;font-family:inherit;color:inherit;min-width:0}
+textarea.input{height:auto;padding:8px 12px;width:100%;resize:vertical}
+.input:focus,.select:focus{outline:2px solid rgba(126,25,27,.25);border-color:var(--primary)}
+.select{padding-right:28px}
+.field{display:flex;flex-direction:column;gap:5px} .field label{font-size:12.5px;font-weight:600;color:#555}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--border);padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-gr{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}.b-am{background:#fffbeb;color:#b45309;border-color:#fde68a}.b-bl{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.b-rd{background:#fef2f2;color:#b91c1c;border-color:#fecaca}.b-gy{background:#f3f4f6;color:#4b5563;border-color:#e5e7eb}.b-in{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}.b-pu{background:#faf5ff;color:#7e22ce;border-color:#e9d5ff}.b-pr{background:var(--primary-10);color:var(--primary);border-color:rgba(126,25,27,.25)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;background:#f1ecec;padding:6px;border-radius:10px}
+.tab{display:flex;align-items:center;gap:8px;border:0;background:none;border-radius:7px;padding:9px 18px;font-size:14.5px;font-weight:600;color:#555}
+.tab:hover{background:rgba(255,255,255,.6)}
+.tab.on{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.pane{display:none;flex-direction:column;gap:20px} .pane.on{display:flex}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff}
+.tbl th{background:#f7f3f3;text-align:left;font-weight:600;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:13px}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover{background:#fbf8f8}
+.tbl .c{text-align:center} .tbl .r{text-align:right}
+.tbl tr.sel{background:var(--primary-10)}
+.muted{color:var(--sub)} .small{font-size:12.5px} .bold{font-weight:700} .pri-c{color:var(--primary)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.55}
+.note.info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.note.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.note.pri{background:var(--primary-10);color:var(--primary-d);border:1px solid rgba(126,25,27,.2)}
+.note.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.bar{height:8px;border-radius:99px;background:#eee;overflow:hidden;position:relative}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.bar-row{display:grid;grid-template-columns:130px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.bar-row .n{color:#444} .bar-row .v{text-align:right;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#555}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart svg{width:100%;height:auto;display:block}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.chk input{accent-color:var(--primary);width:16px;height:16px}
+.divider{height:1px;background:var(--border)}
+.steps{display:flex;gap:0;flex-wrap:wrap}
+.step{flex:1;min-width:150px;padding:12px 14px;border:1px solid var(--border);background:#fff;position:relative;font-size:13px}
+.step:first-child{border-radius:8px 0 0 8px}.step:last-child{border-radius:0 8px 8px 0}
+.step .n{font-size:11px;font-weight:700;color:var(--sub)} .step b{display:block;margin:2px 0}
+.step.done{background:#f0fdf4;border-color:#bbf7d0}.step.cur{background:var(--primary-10);border-color:rgba(126,25,27,.35)}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:22px}
+.timeline:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:#e5dede}
+.tl{position:relative;padding:0 0 16px}
+.tl:before{content:"";position:absolute;left:-21px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.tl.admin:before{border-color:var(--blue)} .tl.sys:before{border-color:#9ca3af}
+.tl .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.tl .b{font-size:13px;color:#444;margin-top:3px;background:#faf7f7;border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.pager{display:flex;gap:4px;justify-content:center}
+.pager button{min-width:30px;height:30px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12.5px}
+.pager button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.proto{position:fixed;right:14px;bottom:14px;z-index:60;background:rgba(36,36,36,.88);color:#fff;font-size:11.5px;padding:6px 12px;border-radius:99px}
+
+/* modal / drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:12px;width:min(780px,100%);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal.lg{width:min(1000px,100%)}
+.modal-h{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-b{padding:20px 22px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.x{border:0;background:none;font-size:22px;line-height:1;color:#777}
+.toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);background:#262626;color:#fff;padding:10px 18px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.switch{position:relative;width:38px;height:22px;display:inline-block}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#d4d4d4;border-radius:99px;transition:.2s;cursor:pointer}
+.switch span:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+span{background:var(--primary)} .switch input:checked+span:before{transform:translateX(16px)}
+
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g-21,.g-12,.g-32{grid-template-columns:1fr}.sidebar{display:none}.page{padding:20px 16px}.header{padding:0 16px}}
+@media(max-width:700px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+
+.u-header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--border)}
+.u-in{max-width:1280px;margin:0 auto;height:72px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.u-logo{display:flex;align-items:center;gap:12px}.u-logo img{height:36px}
+.u-logo div{display:flex;flex-direction:column;line-height:1.25}.u-logo b{font-size:14px}.u-logo span{font-size:11px;color:var(--sub)}
+.u-nav{display:flex;gap:40px;font-weight:600;font-size:16px}.u-nav span{display:flex;align-items:center;gap:6px}
+.u-footer{border-top:1px solid var(--border);background:rgba(245,240,240,.5);margin-top:40px}
+.u-page{max-width:1280px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:22px}
+.banner{border-radius:14px;background:linear-gradient(90deg,#7E191B,#a52325);padding:26px 30px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.banner .av{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.banner .pill{background:rgba(255,255,255,.2);border-radius:999px;padding:2px 12px;font-size:12px;font-weight:600}
+.banner .bt{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.banner .bt:hover{background:rgba(255,255,255,.32)}
+.scard{padding:20px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.scard .ic{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.scard .v{font-size:23px;font-weight:700}
+.diag{padding:18px 20px;display:flex;flex-direction:column;gap:12px;border-top:4px solid var(--primary)}
+.prog{padding:16px;display:flex;flex-direction:column;gap:10px}
+.sel-list{max-height:560px;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-right:4px}
+.sel-grp .gh{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13.5px;padding:6px 0;border-bottom:2px solid var(--primary);margin-bottom:4px}
+.sel-item{display:flex;gap:8px;align-items:flex-start;padding:6px 4px;font-size:13px;border-bottom:1px dashed #eee;cursor:pointer}
+.sel-item input{margin-top:3px;accent-color:var(--primary)}
+.sel-item small{display:block;color:var(--sub);font-size:11.5px}
+.paper-wrap{background:#e9e4e4;padding:22px;border-radius:10px;overflow:auto;max-height:820px}
+.paper{width:794px;max-width:100%;min-height:1000px;margin:0 auto;background:#fff;padding:52px 56px;box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:12.5px;line-height:1.6;color:#222}
+.paper h1{font-size:26px;letter-spacing:.3em;text-align:center;border-bottom:3px double #7E191B;padding-bottom:14px;margin-bottom:20px;color:#222}
+.paper .ph{display:flex;gap:20px;margin-bottom:18px}
+.paper .photo{width:96px;height:124px;border:1px solid #bbb;background:#f3f0f0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:11px;flex:none}
+.paper table{border-collapse:collapse;width:100%;font-size:12px}
+.paper th,.paper td{border:1px solid #cfc7c7;padding:5px 8px;text-align:left;vertical-align:top}
+.paper th{background:#f6f1f1;font-weight:600;white-space:nowrap}
+.paper h2{font-size:14px;margin:18px 0 6px;padding-left:8px;border-left:4px solid #7E191B}
+.paper .it{padding:5px 0;border-bottom:1px dotted #ddd}
+.paper .it b{font-size:12.5px}
+.paper .sub{color:#666;font-size:11.5px}
+.paper .stmt{border:1px solid #cfc7c7;padding:10px 12px;background:#fcfafa;white-space:pre-wrap}
+.paper .foot{text-align:center;margin-top:30px;color:#555;font-size:12px}
+.mini-bar{display:grid;grid-template-columns:110px 1fr 28px;gap:8px;align-items:center;font-size:11.5px;margin:2px 0}
+.mini-bar i{display:block;height:8px;background:#7E191B;border-radius:4px}
+.mini-bar div{background:#eee;border-radius:4px}
+.saved{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12.5px;background:#fcfafa}
+@media(max-width:900px){.u-nav{display:none}.u-in,.u-page{padding-left:16px;padding-right:16px}.paper{padding:28px 22px}}
+@media print{
+  body *{visibility:hidden}
+  .paper,.paper *{visibility:visible}
+  .paper{position:absolute;left:0;top:0;width:100%;box-shadow:none;padding:12mm 14mm;min-height:0}
+  .paper-wrap{max-height:none;overflow:visible;background:none;padding:0}
+  .proto,.toast{display:none!important}
+  @page{size:A4;margin:8mm}
+}
+</style>
+</head>
+<body>
+<header class="u-header">
+  <div class="u-in">
+    <a class="u-logo" href="#"><img src="../public/images/korea-univ-logo.png" alt="고려대학교 대학원"><div><b>고려대학교 대학원</b><span>Korea University Graduate School</span></div></a>
+    <nav class="u-nav">
+      <span>역량 관리시스템 소개 <i data-i="chev" data-c="sm"></i></span>
+      <span>역량 관리 <i data-i="chev" data-c="sm"></i></span>
+      <span>정보마당 <i data-i="chev" data-c="sm"></i></span>
+    </nav>
+    <div class="row" style="gap:8px">
+      <a class="btn sm" style="border:0"><span data-i="user" data-c="sm"></span>마이페이지</a>
+      <a class="btn sm" style="border:0;color:#777"><span data-i="chev" data-c="sm" style="display:none"></span>로그아웃</a>
+      <a class="btn sm" href="career-track.html">관리자모드</a>
+    </div>
+  </div>
+</header>
+<main>
+<div class="u-page">
+  <!-- 배너 -->
+  <div class="banner">
+    <div class="row" style="gap:16px;flex-wrap:nowrap">
+      <div class="av"><span data-i="user" data-c="lg" style="width:32px;height:32px"></span></div>
+      <div>
+        <div class="row" style="gap:8px"><h1 style="color:#fff;font-size:24px">김민준</h1><span class="pill">박사</span><span class="pill">재학</span></div>
+        <div style="font-size:13.5px;opacity:.85;margin-top:4px">경영학과 | 이영철 교수 | 경영전략연구실</div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="bt" onclick="go('t-diag')"><span data-i="bar" data-c="sm"></span>진단 이력·결과</button>
+      <button class="bt" onclick="toast('역량설문 참가 창이 열립니다')"><span data-i="file" data-c="sm"></span>역량설문 참가</button>
+    </div>
+  </div>
+
+  <div class="tabs" data-tabs="#panes" id="mainTabs">
+    <button class="tab on" data-pane="t-dash"><span data-i="dash"></span>나의 대시보드</button>
+    <button class="tab" data-pane="t-diag"><span data-i="bar"></span>진단 이력·결과</button>
+    <button class="tab" data-pane="t-resume"><span data-i="file"></span>이력서</button>
+    <button class="tab" data-pane="t-port"><span data-i="flask"></span>연구 포트폴리오</button>
+  </div>
+
+  <div id="panes">
+  <!-- ═══ 대시보드 ═══ -->
+  <section class="pane on" id="t-dash">
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="card scard"><div class="ic bg-b"><span data-i="book" data-c="lg"></span></div><span class="muted small">취득학점</span><span class="v">18</span></div>
+      <div class="card scard"><div class="ic bg-i"><span data-i="grad" data-c="lg"></span></div><span class="muted small">평균 GPA</span><span class="v">4.13</span></div>
+      <div class="card scard"><div class="ic bg-g"><span data-i="file" data-c="lg"></span></div><span class="muted small">논문</span><span class="v">2편</span></div>
+      <div class="card scard"><div class="ic bg-a"><span data-i="user" data-c="lg"></span></div><span class="muted small">학술발표</span><span class="v">2건</span></div>
+      <div class="card scard"><div class="ic bg-r"><span data-i="award" data-c="lg"></span></div><span class="muted small">수상</span><span class="v">1건</span></div>
+      <div class="card scard"><div class="ic bg-i"><span data-i="award" data-c="lg"></span></div><span class="muted small">자격/어학</span><span class="v">4건</span></div>
+    </div>
+
+    <div>
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2>3종 진단 결과 요약</h2><span class="muted small">가장 최근 진단 기준</span></div>
+      <div class="grid g3">
+        <div class="card diag" style="border-top-color:#2563eb"><div class="row" style="justify-content:space-between"><b><span data-i="bar" data-c="sm" style="color:#2563eb"></span> 핵심역량</b><span class="badge b-am">개선필요</span></div>
+          <div class="row" style="align-items:flex-end;gap:8px"><span style="font-size:34px;font-weight:800;line-height:1">64</span><span class="muted small">/ 100 · 학과평균 72 <b style="color:#b91c1c">(-8)</b></span></div>
+          <div class="bar"><i style="width:64%;background:#2563eb"></i></div>
+          <div class="small muted">직전 대비 <b style="color:#15803d">▲3</b> · 진단일 2026-10-05</div>
+          <div class="row"><button class="btn sm" onclick="openDiag(0)">결과 보기</button><button class="btn sm" onclick="go('t-diag')">이력</button></div></div>
+        <div class="card diag" style="border-top-color:#16a34a"><div class="row" style="justify-content:space-between"><b><span data-i="book" data-c="sm" style="color:#16a34a"></span> 학습연구역량</b><span class="badge b-gr">우수</span></div>
+          <div class="row" style="align-items:flex-end;gap:8px"><span style="font-size:34px;font-weight:800;line-height:1">78</span><span class="muted small">/ 100 · 학과평균 76 <b style="color:#15803d">(+2)</b></span></div>
+          <div class="bar"><i style="width:78%;background:#16a34a"></i></div>
+          <div class="small muted">직전 대비 <b style="color:#15803d">▲3</b> · 진단일 2026-10-05</div>
+          <div class="row"><button class="btn sm" onclick="openDiag(1)">결과 보기</button><button class="btn sm" onclick="go('t-diag')">이력</button></div></div>
+        <div class="card diag" style="border-top-color:#d97706"><div class="row" style="justify-content:space-between"><b><span data-i="compass" data-c="sm" style="color:#d97706"></span> 진로 트랙</b><span class="badge b-pr">NEW</span></div>
+          <div class="row" style="align-items:flex-end;gap:8px"><span style="font-size:25px;font-weight:800;line-height:1.2;color:#7E191B">학술연구형</span></div>
+          <div class="small">적합도 <b>82점</b> · 2순위 <b>산업 R&amp;D형</b> (60점)</div>
+          <div class="bar"><i style="width:82%;background:#d97706"></i></div>
+          <div class="small muted">진단일 2026-10-05 · 1회 응시</div>
+          <div class="row"><button class="btn sm" onclick="openDiag(2)">결과 보기</button><button class="btn sm" onclick="go('t-diag')">이력</button></div></div>
+      </div>
+    </div>
+
+    <div class="grid g-21">
+      <div class="card"><div class="card-h"><h3>나의 역량 프로파일</h3><span class="desc">점선 = 학과 평균</span></div>
+        <div class="card-b grid g3" style="gap:0"><div><div class="small bold" style="text-align:center;color:#2563eb">핵심역량</div><div class="chart" id="rdA"></div></div><div><div class="small bold" style="text-align:center;color:#16a34a">학습연구역량</div><div class="chart" id="rdB"></div></div><div><div class="small bold" style="text-align:center;color:#d97706">진로 트랙</div><div class="chart" id="rdC"></div></div></div></div>
+      <div class="card"><div class="card-h"><h3>강점 · 보완점</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px" id="swBox"></div></div>
+    </div>
+
+    <div>
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2>나를 위한 추천 프로그램</h2>
+        <div class="row" id="pgFilter"><button class="btn sm pri" data-f="">전체</button><button class="btn sm" data-f="보완점">보완점 기반</button><button class="btn sm" data-f="진로">진로 트랙 기반</button></div></div>
+      <div class="grid g3" id="pgList"></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3>최근 진단 이력</h3><button class="btn xs" onclick="go('t-diag')">전체 보기</button></div><div class="card-b" style="padding:0"><div class="tbl-wrap" style="border:0"><table class="tbl" id="recentTbl"></table></div></div></div>
+      <div class="card"><div class="card-h"><h3>신청한 비교과 · 일정</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+        <div class="saved"><span><b>BK21 세미나</b><br><span class="muted small">2026-10-18 14:00 · 경영대학 세미나실</span></span><span class="badge b-gr">참여 예정</span></div>
+        <div class="saved"><span><b>논문작성법 특강</b><br><span class="muted small">2026-10-22 ~ 10-24 · 경영관 201호</span></span><span class="badge b-gr">참여 예정</span></div>
+        <div class="saved"><span><b>융합연구 아이디어톤</b><br><span class="muted small">신청 심사 중</span></span><span class="badge b-am">대기</span></div></div></div>
+    </div>
+  </section>
+
+  <!-- ═══ 진단 이력 ═══ -->
+  <section class="pane" id="t-diag">
+    <div class="card"><div class="card-h"><h3>3종 진단 이력</h3>
+      <div class="row"><select class="select" id="dKind"><option value="">전체 진단</option><option>핵심역량</option><option>학습연구역량</option><option>진로 트랙</option></select><button class="btn" onclick="toast('진단 결과 PDF를 생성합니다')"><span data-i="dl" data-c="sm"></span>결과 내려받기</button></div></div>
+      <div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>진단 종류</th><th>회차</th><th>진단일</th><th class="c">점수 / 결과</th><th class="c">등급</th><th class="c">학과 평균</th><th class="c">결과</th></tr></thead><tbody id="dBody"></tbody></table></div></div></div>
+    <div class="card"><div class="card-h"><h3>점수 추이</h3><span class="desc">핵심역량 · 학습연구역량</span></div><div class="card-b chart" id="dTrend"></div><div class="legend" style="padding:0 20px 16px"><span><i style="background:#2563eb"></i>핵심역량</span><span><i style="background:#16a34a"></i>학습연구역량</span><span style="color:#888">※ 진로 트랙은 점수가 아닌 유형 결과이므로 표에서 확인합니다.</span></div></div>
+  </section>
+
+  <!-- ═══ 이력서 ═══ -->
+  <section class="pane" id="t-resume">
+    <div class="note pri"><span data-i="info"></span><div><b>이력서 만들기</b> · 교과/비교과 학습 이력과 3종 진단 결과 중 <b>이력서에 넣을 항목을 선택</b>하면 오른쪽 미리보기에 즉시 반영됩니다. 완성된 이력서는 <b>인쇄 · 저장 · PDF 변환</b>할 수 있습니다.</div></div>
+    <div id="resumeApp"></div>
+  </section>
+
+  <!-- ═══ 포트폴리오 ═══ -->
+  <section class="pane" id="t-port">
+    <div class="note pri"><span data-i="info"></span><div><b>연구 포트폴리오 만들기</b> · 논문·학술발표·수상·연구 관련 이력과 연구역량 진단 결과를 선택해 구성합니다. <b>연구 소개</b>는 직접 작성할 수 있습니다.</div></div>
+    <div id="portApp"></div>
+  </section>
+  </div>
+</div>
+
+<!-- 진단 결과 상세 모달 -->
+<div class="overlay" id="m-diag"><div class="modal">
+  <div class="modal-h"><h2 id="mdT">진단 결과</h2><button class="x" onclick="closeModal('m-diag')">×</button></div>
+  <div class="modal-b" id="mdB"></div>
+  <div class="modal-f"><button class="btn" onclick="closeModal('m-diag')">닫기</button></div>
+</div></div>
+
+</main>
+<footer class="u-footer"><div class="u-in" style="display:block;height:auto;padding:24px 32px">
+  <div class="small"><b>개인정보처리방침</b> / <b>이메일무단수집거부</b></div>
+  <p class="muted small" style="margin-top:6px">서울캠퍼스 [02841] 서울특별시 성북구 안암로 145 | 세종캠퍼스 [30019] 세종특별자치시 세종로 2511<br>대표전화 : 02-3290-5146  이메일 : graduate2@korea.ac.kr<br>Copyright (C)2026 Korea University. All Rights Reserved</p>
+</div></footer>
+<div class="proto">UI 시안 · 샘플 데이터</div>
+<script>/* ── helpers shared by all mock screens ── */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+function initTabs(root=document){
+  $$('[data-tabs]',root).forEach(g=>{
+    const tabs=$$('.tab',g), scope=document.querySelector(g.dataset.tabs);
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.toggle('on',x===t));
+      $$(':scope > .pane',scope).forEach(p=>p.classList.toggle('on',p.id===t.dataset.pane));
+      window.scrollTo({top:0});
+    }));
+  });
+}
+function openModal(id){$('#'+id).classList.add('on')}
+function closeModal(id){$('#'+id).classList.remove('on')}
+document.addEventListener('click',e=>{
+  if(e.target.classList&&e.target.classList.contains('overlay'))e.target.classList.remove('on');
+  const mb=e.target.closest('.menu-group>.menu-btn'); if(mb)mb.parentElement.classList.toggle('open');
+});
+function ic(n,c=''){const p={
+ dash:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>',
+ trend:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+ bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+ user:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
+ chev:'<polyline points="6 9 12 15 18 9"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+ compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+ layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+ grad:'<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+ mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',
+ send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+ up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+ check:'<polyline points="20 6 9 17 4 12"/>', clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+ eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+ refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/>',
+ print:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+ flask:'<path d="M10 2v7.5L4 20a1 1 0 0 0 .9 1.5h14.2a1 1 0 0 0 .9-1.5L14 9.5V2"/><path d="M8.5 2h7"/>',
+ award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/>',
+ brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+ target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ hist:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+ trash:'<path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
+ star:'<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>',
+ filter:'<polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"/>'
+}[n]||'';return `<svg class="i ${c}" viewBox="0 0 24 24">${p}</svg>`}
+function hydrateIcons(){$$('[data-i]').forEach(e=>{e.outerHTML=ic(e.dataset.i,e.dataset.c||'')})}
+
+/* radar chart (SVG) — series:[{name,color,values[]}] */
+function radar(el,labels,series,opt={}){
+  const S=opt.size||360,cx=S/2,cy=S/2,R=S/2-62,n=labels.length,max=opt.max||100,rings=[20,40,60,80,100];
+  const pt=(i,v)=>{const a=-Math.PI/2+2*Math.PI*i/n;return[cx+R*v/max*Math.cos(a),cy+R*v/max*Math.sin(a)]};
+  let g='';rings.forEach(r=>{g+=`<polygon points="${labels.map((_,i)=>pt(i,r).join(',')).join(' ')}" fill="none" stroke="#e5dede" stroke-width="1"/>`;
+    g+=`<text x="${cx+3}" y="${cy-R*r/max+10}" font-size="9" fill="#aaa">${r}</text>`});
+  labels.forEach((l,i)=>{const[x,y]=pt(i,max),[lx,ly]=pt(i,max+14);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5dede"/>`;
+    const anc=Math.abs(lx-cx)<8?'middle':lx>cx?'start':'end';g+=`<text x="${lx}" y="${ly+4}" font-size="11.5" font-weight="600" fill="#444" text-anchor="${anc}">${l}</text>`});
+  series.forEach(s=>{const p=s.values.map((v,i)=>pt(i,v).join(',')).join(' ');
+    g+=`<polygon points="${p}" fill="${s.color}" fill-opacity="${s.fill??.18}" stroke="${s.color}" stroke-width="2" ${s.dash?'stroke-dasharray="5 4"':''}/>`;
+    if(!s.dash)s.values.forEach((v,i)=>{const[x,y]=pt(i,v);g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${s.color}"/>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* grouped vertical bars — data:[{label,values[]}], colors[] */
+function bars(el,data,colors,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=34,B=34,T=14,max=opt.max||100,gw=(W-L-10)/data.length,k=colors.length,bw=Math.min(28,(gw-16)/k);
+  let g='';[0,25,50,75,100].filter(v=>v<=max||v===0).forEach(v=>{const y=T+(H-T-B)*(1-v/max);g+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}</text>`});
+  data.forEach((d,i)=>{const x0=L+gw*i+(gw-bw*k-(k-1)*3)/2;d.values.forEach((v,j)=>{const h=(H-T-B)*v/max,x=x0+j*(bw+3),y=H-B-h;
+    g+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" fill="${colors[j]}"><title>${d.label}: ${v}</title></rect>`;
+    if(opt.val!==false)g+=`<text x="${x+bw/2}" y="${y-4}" font-size="10" font-weight="600" fill="#444" text-anchor="middle">${v}</text>`});
+    g+=`<text x="${L+gw*i+gw/2}" y="${H-12}" font-size="11" fill="#555" text-anchor="middle">${d.label}</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* line chart — x labels, series:[{name,color,values[]}] */
+function lines(el,xs,series,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=36,R=16,B=32,T=14,max=opt.max||100,min=opt.min||0,sx=i=>L+(W-L-R)*i/(xs.length-1||1),sy=v=>T+(H-T-B)*(1-(v-min)/(max-min));
+  let g='';const step=(max-min)/4;for(let k=0;k<=4;k++){const v=min+step*k,y=sy(v);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}${opt.unit||''}</text>`}
+  xs.forEach((x,i)=>g+=`<text x="${sx(i)}" y="${H-10}" font-size="11" fill="#555" text-anchor="middle">${x}</text>`);
+  series.forEach(s=>{g+=`<polyline fill="none" stroke="${s.color}" stroke-width="2.5" points="${s.values.map((v,i)=>sx(i)+','+sy(v)).join(' ')}"/>`;
+    s.values.forEach((v,i)=>{g+=`<circle cx="${sx(i)}" cy="${sy(v)}" r="4" fill="#fff" stroke="${s.color}" stroke-width="2.5"><title>${s.name} ${xs[i]}: ${v}</title></circle>`;if(opt.val!==false)g+=`<text x="${sx(i)}" y="${sy(v)-9}" font-size="10" font-weight="600" fill="${s.color}" text-anchor="middle">${v}${opt.unit||''}</text>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* donut — parts:[{name,v,color}] */
+function donut(el,parts,center){
+  const S=180,cx=90,cy=90,r=68,sw=26,tot=parts.reduce((a,b)=>a+b.v,0);let a0=-Math.PI/2,g='';
+  parts.forEach(p=>{const a1=a0+2*Math.PI*p.v/tot,l=a1-a0>Math.PI?1:0;
+    const d=`M${cx+r*Math.cos(a0)} ${cy+r*Math.sin(a0)} A${r} ${r} 0 ${l} 1 ${cx+r*Math.cos(a1-.0001)} ${cy+r*Math.sin(a1-.0001)}`;
+    g+=`<path d="${d}" fill="none" stroke="${p.color}" stroke-width="${sw}"><title>${p.name} ${p.v}</title></path>`;a0=a1});
+  g+=`<text x="${cx}" y="${cy-2}" font-size="22" font-weight="700" text-anchor="middle" fill="#242424">${center[0]}</text><text x="${cx}" y="${cy+16}" font-size="11" text-anchor="middle" fill="#888">${center[1]}</text>`;
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* admin shell */
+const ADMIN_MENU=[
+ {t:'대시보드',i:'dash',u:'#'},
+ {t:'대학원 성과지표',i:'trend',s:[['핵심성과지표'],['자율성과지표']]},
+ {t:'교육연구단 성과지표',i:'users',u:'#'},
+ {t:'게시판관리',i:'file',s:[['공지사항'],['자료실']]},
+ {t:'핵심역량진단',i:'bar',s:[['진단현황'],['버전관리'],['설문지관리']]},
+ {t:'진로 트랙 검사',i:'compass',s:[['검사 운영·문항 탑재','career-track'],['결과 대시보드','career-track']],isNew:1},
+ {t:'통합 프로파일',i:'layers',u:'integrated-profile',key:'profile',isNew:1},
+ {t:'졸업생 진로 추적',i:'grad',u:'graduate-tracking',key:'grad',isNew:1},
+ {t:'학생정보',i:'user',u:'#'}
+];
+function renderAdmin(active){
+  const html=ADMIN_MENU.map(m=>{
+    if(m.s){const open=m.key===active||m.s.some(x=>x[1]===active);
+      return `<div class="menu-group ${open?'open':''}"><button class="menu-btn">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}${ic('chev','chev')}</button><div class="submenu">${m.s.map((x,k)=>`<a href="${x[1]?x[1]+'.html':'#'}" class="${x[1]===active&&(k===0||x[1]!=='career-track')?(k===0?'active':''):''}">${x[0]}</a>`).join('')}</div></div>`}
+    const on=(m.u===active||m.key===active);
+    return `<a class="menu-btn ${on?'active':''}" href="${m.u&&m.u!=='#'?m.u+'.html':'#'}">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}</a>`}).join('');
+  $('#sidebar-nav').innerHTML=html}
+
+initTabs();
+function go(id){const b=$(`#mainTabs .tab[data-pane="${id}"]`);b&&b.click()}
+const CORE=['논리적 추론','다학제간 통찰','독창적 발상','메타인지적 성찰','연구문제 구조화','증거기반 분석'],CV=[68,58,55,62,69,71],CA=[72,70,66,68,72,74];
+const LEARN=['학업적 효능감','학업적 회복탄력성','성실성 및 책임감','시간관리','집중력·학습환경','학습전략·정보처리'],LV=[85,80,81,72,76,74],LA=[78,76,77,74,75,76];
+const TDIM=['연구탐구','기술개발','사업개척','공공기여','교육전달','전문서비스'],TV=[82,60,48,55,66,58],TAV=[70,62,58,56,60,62];
+const lvl=s=>s>=85?['탁월','b-am']:s>=75?['우수','b-gr']:s>=65?['보통','b-bl']:['개선필요','b-rd'];
+
+/* ── 진단 이력 ── */
+const DH=[
+ {k:'진로 트랙',r:'2026-2학기',d:'2026-10-05',res:'학술연구형',sc:82,avg:'-',type:2},
+ {k:'학습연구역량',r:'2026-2학기',d:'2026-10-05',sc:78,avg:76,type:1},
+ {k:'핵심역량',r:'2026-2학기',d:'2026-10-05',sc:64,avg:72,type:0},
+ {k:'학습연구역량',r:'2026-1학기',d:'2026-04-11',sc:75,avg:75,type:1},
+ {k:'핵심역량',r:'2026-1학기',d:'2026-04-11',sc:61,avg:70,type:0},
+ {k:'학습연구역량',r:'2025-2학기',d:'2025-10-09',sc:73,avg:74,type:1},
+ {k:'핵심역량',r:'2025-2학기',d:'2025-10-09',sc:58,avg:68,type:0}];
+function drawDH(){const f=$('#dKind').value;$('#dBody').innerHTML=DH.map((x,i)=>({x,i})).filter(o=>!f||o.x.k===f).map(({x,i})=>{const l=x.type===2?null:lvl(x.sc);return`<tr><td class="bold">${x.k}</td><td>${x.r}</td><td class="muted">${x.d}</td><td class="c bold">${x.type===2?x.res+' <span class="muted small">('+x.sc+'점)</span>':x.sc+'점'}</td><td class="c">${l?`<span class="badge ${l[1]}">${l[0]}</span>`:'<span class="badge b-pr">1순위</span>'}</td><td class="c">${x.avg}</td><td class="c"><button class="btn xs" onclick="openDiagH(${i})">결과 보기</button></td></tr>`}).join('')}
+$('#dKind').onchange=drawDH;drawDH();
+$('#recentTbl').innerHTML='<thead><tr><th>진단</th><th>회차</th><th class="c">결과</th><th class="c"></th></tr></thead><tbody>'+DH.slice(0,5).map((x,i)=>`<tr><td class="bold">${x.k}</td><td class="muted small">${x.r}</td><td class="c bold">${x.type===2?x.res:x.sc+'점'}</td><td class="c"><button class="btn xs" onclick="openDiagH(${i})">보기</button></td></tr>`).join('')+'</tbody>';
+lines($('#dTrend'),['2025-2','2026-1','2026-2'],[{name:'핵심역량',color:'#2563eb',values:[58,61,64]},{name:'학습연구역량',color:'#16a34a',values:[73,75,78]}],{min:40,max:100,h:230});
+
+/* ── 결과 상세 ── */
+const barS=(n,v,a,c)=>`<div style="display:grid;grid-template-columns:130px 1fr 34px 60px;gap:10px;align-items:center;font-size:13px"><span>${n}</span><div class="bar" style="overflow:visible"><i style="width:${v}%;background:${c}"></i><u style="position:absolute;left:${a}%;top:-3px;width:2px;height:14px;background:#333"></u></div><b style="text-align:right">${v}</b><span class="badge ${lvl(v)[1]}" style="justify-content:center">${lvl(v)[0]}</span></div>`;
+const MSG=[{t:'핵심역량',c:'#2563eb',n:CORE,v:CV,a:CA,s:64,msg:'융합연구 관련 항목(다학제간 통찰·독창적 발상)이 학과 평균 대비 낮습니다. 타 전공 세미나와 아이디어 발상 프로그램을 권장합니다.'},
+ {t:'학습연구역량',c:'#16a34a',n:LEARN,v:LV,a:LA,s:78,msg:'학업적 효능감과 회복탄력성이 우수합니다. 시간관리 항목은 상대적으로 낮아 연구 일정 코칭을 권장합니다.'}];
+function openDiag(t,hist){$('#mdT').textContent=(DH.find(x=>x.type===t&&(!hist||true))||{}).k+' 진단 결과';
+  if(t===2){$('#mdB').innerHTML=`<div class="note pri"><span data-i="compass"></span><div><b>1순위 학술연구형</b> (적합도 82점) · 2순위 산업 R&amp;D형 (60점)<br><span class="small">연구탐구 영역이 가장 높으며, 학계 진출 및 연구기관 진로와 연계성이 높은 유형입니다.</span></div></div><div class="grid g2" style="align-items:center"><div class="chart" id="mdR"></div><div style="display:flex;flex-direction:column;gap:8px">${TDIM.map((d,i)=>`<div class="bar-row" style="grid-template-columns:80px 1fr 30px"><span class="n">${d}</span><div class="bar"><i style="width:${TV[i]}%;background:#d97706"></i></div><span class="v">${TV[i]}</span></div>`).join('')}</div></div><div class="note info small"><span data-i="info"></span><div>진로 트랙 결과는 별도 용역 산출물의 판정 알고리즘에 따라 산출됩니다. 추천 프로그램은 대시보드에서 확인하세요.</div></div>`;
+    openModal('m-diag');hydrateIcons();radar($('#mdR'),TDIM,[{name:'평균',color:'#999',values:TAV,dash:1,fill:0},{name:'나',color:'#d97706',values:TV}],{size:300});return}
+  const m=MSG[t];$('#mdB').innerHTML=`<div class="row" style="gap:14px"><span style="font-size:40px;font-weight:800;color:${m.c}">${m.s}</span><div><span class="badge ${lvl(m.s)[1]}">${lvl(m.s)[0]}</span><div class="muted small">▍ = 학과 평균</div></div></div><div style="display:flex;flex-direction:column;gap:10px">${m.n.map((n,i)=>barS(n,m.v[i],m.a[i],m.c)).join('')}</div><div class="note info small"><span data-i="info"></span><div>${m.msg}</div></div>`;openModal('m-diag');hydrateIcons()}
+function openDiagH(i){const x=DH[i];openDiag(x.type)}
+
+/* ── 대시보드 ── */
+radar($('#rdA'),CORE.map(n=>n.slice(0,5)),[{name:'학과',color:'#999',values:CA,dash:1,fill:0},{name:'나',color:'#2563eb',values:CV}],{size:270});
+radar($('#rdB'),LEARN.map(n=>n.slice(0,5)),[{name:'학과',color:'#999',values:LA,dash:1,fill:0},{name:'나',color:'#16a34a',values:LV}],{size:270});
+radar($('#rdC'),TDIM,[{name:'평균',color:'#999',values:TAV,dash:1,fill:0},{name:'나',color:'#d97706',values:TV}],{size:270});
+const ALL=[...CORE.map((n,i)=>({n,v:CV[i],g:'핵심'})),...LEARN.map((n,i)=>({n,v:LV[i],g:'학습연구'}))].sort((a,b)=>b.v-a.v);
+$('#swBox').innerHTML=`<div class="bold" style="color:#15803d">강점</div>${ALL.slice(0,3).map(x=>`<div class="note ok" style="justify-content:space-between;padding:8px 12px"><span><b>${x.n}</b> <span class="small">${x.g}</span></span><b>${x.v}</b></div>`).join('')}<div class="bold" style="color:#b91c1c;margin-top:4px">보완점</div>${ALL.slice(-3).reverse().map(x=>`<div class="note" style="justify-content:space-between;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b"><span><b>${x.n}</b> <span class="small">${x.g}</span></span><b>${x.v}</b></div>`).join('')}<div class="note pri small"><span data-i="compass"></span><div>진로 트랙 <b>학술연구형</b> 과 연계하면 <b>연구문제 구조화·증거기반 분석</b> 강점을 살려 학술논문 역량을 확장할 수 있습니다.</div></div>`;
+const PG=[
+ {n:'융합연구 아이디어톤',w:'보완점',why:'다학제간 통찰 · 독창적 발상 보완',p:'2026-11-05 ~ 11-20',s:'신청 가능',h:12,c:'#2563eb'},
+ {n:'연구 시간관리 · 몰입 코칭',w:'보완점',why:'시간관리 보완',p:'2026-11-02 ~ 11-30',s:'신청 가능',h:8,c:'#16a34a'},
+ {n:'영문 학술논문 작성 워크숍',w:'진로',why:'학술연구형 · SCI(E) 투고 역량',p:'2026-10-28 ~ 10-30',s:'마감 임박',h:9,c:'#7E191B'},
+ {n:'연구자 커리어 특강: 교수·포스닥 임용',w:'진로',why:'학술연구형 트랙 연계',p:'2026-11-12 14:00',s:'신청 완료',h:2,c:'#7c3aed'},
+ {n:'다학제 공동연구 세미나',w:'보완점',why:'다학제간 통찰 보완',p:'2026-11-09 ~ 11-23',s:'신청 가능',h:10,c:'#0d9488'},
+ {n:'BK21 학술 멘토링',w:'진로',why:'학술연구형 · 지도교수 외 멘토 매칭',p:'상시 신청',s:'신청 가능',h:15,c:'#d97706'}];
+function drawPg(f){$('#pgList').innerHTML=PG.filter(p=>!f||p.w===f).map(p=>`<div class="card prog" style="border-left:4px solid ${p.c}"><div class="row" style="justify-content:space-between"><span class="badge ${p.w==='진로'?'b-pr':'b-bl'}">${p.w==='진로'?'진로 트랙 기반':'보완점 기반'}</span><span class="badge ${p.s==='신청 완료'?'b-gr':p.s==='마감 임박'?'b-rd':'b-gy'}">${p.s}</span></div><b style="font-size:15px">${p.n}</b><div class="small" style="color:var(--primary)"><span data-i="spark" data-c="sm"></span> ${p.why}</div><div class="muted small">${p.p} · ${p.h}시간</div><button class="btn sm ${p.s==='신청 가능'||p.s==='마감 임박'?'pri':''}" ${p.s==='신청 완료'?'disabled':''} onclick="toast('${p.n} 신청이 접수되었습니다')">${p.s==='신청 완료'?'신청 완료':'신청하기'}</button></div>`).join('');hydrateIcons()}
+$$('#pgFilter .btn').forEach(b=>b.onclick=()=>{$$('#pgFilter .btn').forEach(x=>x.classList.toggle('pri',x===b));drawPg(b.dataset.f)});drawPg('');
+
+/* ═══ 이력서 / 포트폴리오 엔진 ═══ */
+const ST={n:'김민준',sid:'2024020001',dept:'경영학과',prog:'박사과정 2학년 3학기',adv:'이영철 교수',lab:'경영전략연구실',enr:'2024-03-01',mail:'minjun.kim@korea.ac.kr',tel:'010-1234-5678'};
+const G={
+ courses:{t:'교과과정 이수',cols:['연도·학기','과목명','구분','학점','성적'],it:[
+  ['C1','2024 1학기','경영전략론','전공필수','3','A+'],['C2','2024 1학기','조직행동론','전공필수','3','A0'],['C3','2024 2학기','연구방법론','전공필수','3','A+'],['C4','2024 2학기','마케팅관리론','전공선택','3','B+'],['C5','2025 1학기','경영경제학','전공선택','3','A0'],['C6','2025 1학기','박사논문연구I','전공필수','3','P']]},
+ nonc:{t:'비교과 프로그램',cols:['기간','프로그램명','운영','시간'],it:[
+  ['N1','2024-04-05','연구윤리교육','비대면','3시간'],['N2','2024-09-12 ~ 09-14','논문작성법 특강','대면','9시간'],['N3','2025-03-15 ~ 06-07','BK21 세미나','혼합','15시간']]},
+ train:{t:'연수 이력',cols:['기간','프로그램명','기관','국가'],it:[
+  ['T1','2025-01-08 ~ 01-19','해외 단기 연수 프로그램','Harvard Business School','미국'],['T2','2024-07-10 ~ 07-14','연구방법론 집중과정','고려대학교 연구소','한국']]},
+ intern:{t:'인턴십',cols:['기간','프로그램명','기관','국가'],it:[['I1','2025-06-01 ~ 08-31','글로벌 경영전략 인턴십','McKinsey & Company','싱가포르']]},
+ lect:{t:'강의 이력',cols:['학기','과목명','구분','학점'],it:[['L1','2025-1','경영학개론','강의','3'],['L2','2025-1','비즈니스영어 세미나','SEMO','1']]},
+ startup:{t:'창업 이력',cols:['설립일','기업명','업종','직원'],it:[['S1','2024-09-01','(주)에듀테크솔루션','교육서비스업','3명']]},
+ qual:{t:'자격 · 어학',cols:['취득일','명칭','발급기관','점수/비고'],it:[['Q1','2024-05-15','경영지도사','중소벤처기업부','자격증'],['Q3','2024-05-14','TOEIC','ETS Korea','935'],['Q4','2024-09-10','TEPS','서울대학교','488']]},
+ award:{t:'수상 경력',cols:['일자','수상명','수여기관','등급'],it:[['A1','2024-11-25','우수논문상','한국경영학회','금상'],['A2','2025-02-20','BK21 우수 대학원생상','한국연구재단','우수상']]},
+ paper:{t:'논문 실적',kind:'list',it:[['P1','디지털 전환이 기업 성과에 미치는 영향: 동적역량 관점','경영학연구 · 2025-03-15 · 김민준, 이영철 · KCI · 제1저자'],['P2','Strategic Agility and Firm Performance in Digital Era','Asia Pacific Journal of Management · 2025-07-01 · Kim M., Lee Y. · SCI · 제1저자']]},
+ pres:{t:'학술발표',kind:'list',it:[['R1','디지털 전환과 경영전략 혁신','한국경영학회 동계학술대회 · 2024-11-25 · 서울'],['R2','Digital Transformation and Organizational Capability','AOM Annual Meeting 2025 · 2025-08-10 · Chicago, USA']]},
+ diag:{t:'역량 진단 결과',kind:'list',it:[['D1','핵심역량 — 64점 (개선필요)','학과 평균 72점 · 2026-2학기 진단 · 하위: 논리적 추론 68, 증거기반 분석 71 등'],['D2','학습연구역량 — 78점 (우수)','학과 평균 76점 · 학업적 효능감 85, 성실성 81 등'],['D3','진로 트랙 — 학술연구형 (적합도 82)','2순위 산업 R&D형 · 연구탐구 영역 최고']]}};
+const DOC={
+ resume:{name:'이력서',file:'이력서_김민준',groups:['courses','nonc','train','intern','lect','startup','qual','award','paper','diag'],
+   def:{courses:['C1','C2','C3','C5'],nonc:['N2','N3'],train:['T1'],intern:['I1'],startup:['S1'],qual:['Q1','Q3'],award:['A1','A2'],paper:['P1','P2'],diag:['D2','D3']}},
+ port:{name:'연구 포트폴리오',file:'연구포트폴리오_김민준',groups:['paper','pres','award','courses','nonc','train','intern','startup','diag'],
+   def:{paper:['P1','P2'],pres:['R1','R2'],award:['A1'],courses:['C3','C6'],nonc:['N2','N3'],train:['T2'],diag:['D1','D2','D3']}}};
+const S={},META={resume:{title:'이력서',contact:true,stmt:''},port:{title:'연구 포트폴리오',contact:true,
+ stmt:'기업의 디지털 전환과 동적역량이 조직 성과에 미치는 영향을 실증 연구하고 있습니다. 경영전략과 조직역량의 상호작용을 중심으로 국내외 학술지 2편(SCI 1, KCI 1)을 게재하였으며, 향후 다학제 접근을 통한 융합연구로 연구 범위를 확장하고자 합니다.',kw:'디지털 전환, 동적역량, 전략적 민첩성, 조직성과'}};
+const SAVED={resume:[{n:'이력서_연구직 지원용',t:'2026-09-28 10:12',c:12}],port:[{n:'포트폴리오_박사과정 중간점검',t:'2026-09-20 15:40',c:14}]};
+Object.keys(DOC).forEach(k=>{S[k]={};DOC[k].groups.forEach(g=>S[k][g]=new Set(DOC[k].def[g]||[]))});
+function build(k){
+  const d=DOC[k],root=$(k==='resume'?'#resumeApp':'#portApp');
+  root.innerHTML=`<div class="grid" style="grid-template-columns:350px 1fr;align-items:start" class="docgrid">
+   <div class="card" style="position:sticky;top:90px"><div class="card-h"><h3>항목 선택</h3><div class="row"><button class="btn xs" data-a="all">전체 선택</button><button class="btn xs" data-a="none">해제</button></div></div>
+    <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+      <div class="field"><label>문서 제목</label><input class="input" data-m="title" value="${META[k].title}"></div>
+      <label class="chk"><input type="checkbox" data-m="contact" ${META[k].contact?'checked':''}>연락처(이메일·전화) 포함</label>
+      ${k==='port'?`<div class="field"><label>연구 소개 (직접 작성)</label><textarea class="input" rows="5" data-m="stmt">${META[k].stmt}</textarea></div><div class="field"><label>연구 키워드</label><input class="input" data-m="kw" value="${META[k].kw}"></div>`:`<div class="field"><label>자기소개 / 한 줄 소개 (선택)</label><textarea class="input" rows="3" data-m="stmt" placeholder="이력서 상단에 표시됩니다"></textarea></div>`}
+      <div class="sel-list" data-sel></div></div></div>
+   <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+     <div class="card"><div class="card-b row"><b>${d.name} 미리보기</b><span class="badge b-gy" data-cnt></span><span class="spacer"></span>
+       <button class="btn" data-a="save"><span data-i="check" data-c="sm"></span>저장</button><button class="btn" data-a="print"><span data-i="print" data-c="sm"></span>인쇄</button><button class="btn pri" data-a="pdf"><span data-i="dl" data-c="sm"></span>PDF 변환</button></div></div>
+     <div class="paper-wrap"><div class="paper" data-paper></div></div>
+     <div class="card"><div class="card-h"><h3>저장된 문서</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:8px" data-saved></div></div>
+   </div></div>`;
+  const sel=$('[data-sel]',root);
+  sel.innerHTML=d.groups.map(g=>`<div class="sel-grp"><div class="gh"><span>${G[g].t}</span><label class="chk small"><input type="checkbox" data-g="${g}">전체</label></div>${G[g].it.map(r=>`<label class="sel-item"><input type="checkbox" data-k="${g}:${r[0]}" ${S[k][g].has(r[0])?'checked':''}><span>${G[g].kind==='list'?r[1]:itemLabel(g,r)}<small>${G[g].kind==='list'?r[2]:itemSub(g,r)}</small></span></label>`).join('')}</div>`).join('');
+  sel.addEventListener('change',e=>{const t=e.target;
+    if(t.dataset.g){S[k][t.dataset.g]=new Set(t.checked?G[t.dataset.g].it.map(r=>r[0]):[]);$$(`[data-k^="${t.dataset.g}:"]`,sel).forEach(c=>c.checked=t.checked)}
+    else if(t.dataset.k){const[g,id]=t.dataset.k.split(':');t.checked?S[k][g].add(id):S[k][g].delete(id)}
+    sync()});
+  $$('[data-m]',root).forEach(el=>el.addEventListener('input',()=>{META[k][el.dataset.m]=el.type==='checkbox'?el.checked:el.value;paint()}));
+  root.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
+    if(a==='all'||a==='none'){d.groups.forEach(g=>S[k][g]=new Set(a==='all'?G[g].it.map(r=>r[0]):[]));$$('[data-k],[data-g]',sel).forEach(c=>c.checked=a==='all');sync()}
+    if(a==='save'){SAVED[k].unshift({n:META[k].title+'_'+new Date().getFullYear(),t:'2026-10-02 '+String(new Date().getHours()).padStart(2,'0')+':'+String(new Date().getMinutes()).padStart(2,'0'),c:count(k)});paintSaved();toast('저장되었습니다. 저장된 문서에서 다시 불러올 수 있습니다')}
+    if(a==='print')doPrint(k,false);if(a==='pdf')doPrint(k,true)});
+  function count(k){return d.groups.reduce((a,g)=>a+S[k][g].size,0)}
+  function paintSaved(){$('[data-saved]',root).innerHTML=SAVED[k].map(s=>`<div class="saved"><span><b>${s.n}</b><br><span class="muted small">${s.t} · ${s.c}개 항목</span></span><span class="row"><button class="btn xs" onclick="toast('저장본을 불러왔습니다')">불러오기</button><button class="btn xs" onclick="toast('PDF를 다운로드합니다')"><span data-i="dl" data-c="sm"></span>PDF</button></span></div>`).join('');hydrateIcons()}
+  function paint(){$('[data-cnt]',root).textContent=`선택 ${count(k)}개 항목`;$('[data-paper]',root).innerHTML=paper(k)}
+  function sync(){paint()}
+  root._paint=paint;paint();paintSaved();hydrateIcons();
+}
+function itemLabel(g,r){return g==='courses'?r[2]+' ('+r[1]+')':g==='nonc'?r[2]:g==='train'?r[2]:g==='intern'?r[2]:g==='lect'?r[2]:g==='startup'?r[2]:g==='qual'?r[2]:r[2]}
+function itemSub(g,r){return g==='courses'?r[3]+' · '+r[4]+'학점 · '+r[5]:g==='nonc'?r[1]+' · '+r[3]+' · '+r[4]:g==='train'||g==='intern'?r[3]+' · '+r[1]:g==='lect'?r[1]+' · '+r[3]:g==='startup'?r[3]+' · '+r[1]:g==='qual'?r[3]+' · '+r[4]:r[3]+' · '+r[1]+(r[4]?' · '+r[4]:'')}
+function paper(k){
+  const d=DOC[k],m=META[k],isR=k==='resume';
+  let h=`<h1>${m.title}</h1><div class="ph"><div class="photo">사진<br>3×4</div><table><tr><th>성명</th><td>${ST.n}</td><th>학번</th><td>${ST.sid}</td></tr><tr><th>소속</th><td>${ST.dept}</td><th>과정</th><td>${ST.prog}</td></tr><tr><th>지도교수</th><td>${ST.adv}</td><th>연구실</th><td>${ST.lab}</td></tr><tr><th>입학일</th><td>${ST.enr}</td><th>${m.contact?'연락처':'재학상태'}</th><td>${m.contact?ST.mail+'<br>'+ST.tel:'재학'}</td></tr></table></div>`;
+  if(!isR&&m.stmt)h+=`<h2>연구 소개</h2><div class="stmt">${esc(m.stmt)}</div>${m.kw?`<div class="sub" style="margin-top:6px">키워드: <b style="color:#222">${esc(m.kw)}</b></div>`:''}`;
+  if(isR&&m.stmt)h+=`<h2>자기소개</h2><div class="stmt">${esc(m.stmt)}</div>`;
+  d.groups.forEach(g=>{const sel=G[g].it.filter(r=>S[k][g].has(r[0]));if(!sel.length)return;
+    h+=`<h2>${G[g].t}</h2>`;
+    if(G[g].kind==='list')h+=sel.map(r=>`<div class="it"><b>${r[1]}</b><div class="sub">${r[2]}</div></div>`).join('');
+    else h+=`<table><thead><tr>${G[g].cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${sel.map(r=>`<tr>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    if(g==='diag'&&(S[k][g].has('D1')||S[k][g].has('D2'))){h+=`<div style="margin-top:6px">${S[k][g].has('D1')?CORE.map((n,i)=>`<div class="mini-bar"><span>${n}</span><div><i style="width:${CV[i]}%;background:#2563eb"></i></div><b>${CV[i]}</b></div>`).join(''):''}${S[k][g].has('D2')?LEARN.map((n,i)=>`<div class="mini-bar"><span>${n}</span><div><i style="width:${LV[i]}%;background:#16a34a"></i></div><b>${LV[i]}</b></div>`).join(''):''}</div>`}});
+  const total=d.groups.reduce((a,g)=>a+S[k][g].size,0);
+  if(!total)h+='<p class="sub" style="text-align:center;margin-top:40px">왼쪽에서 포함할 항목을 선택하세요.</p>';
+  h+=`<div class="foot">위 내용은 사실과 다름이 없음을 확인합니다.<br><br>2026년 10월 2일<br><b style="font-size:14px">${ST.n}</b> (인)<br><br><span style="color:#888">고려대학교 대학원 역량관리시스템 발급 · ${isR?'이력서':'연구 포트폴리오'}</span></div>`;
+  return h}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}
+function doPrint(k,pdf){const t=document.title;document.title=DOC[k].file;if(pdf)toast('인쇄 창에서 대상을 ‘PDF로 저장’으로 선택하세요 (실서비스: 서버 PDF 변환)');
+  setTimeout(()=>{try{window.print()}catch(e){}document.title=t},pdf?600:50)}
+build('resume');build('port');
+$$('#resumeApp>div,#portApp>div').forEach(x=>{x.style.gridTemplateColumns='350px minmax(0,1fr)'});
+const mq=()=>{const n=innerWidth<1000;$$('#resumeApp>div,#portApp>div').forEach(x=>x.style.gridTemplateColumns=n?'1fr':'350px minmax(0,1fr)')};addEventListener('resize',mq);mq();
+
+hydrateIcons();</script>
+</body>
+</html>

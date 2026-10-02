@@ -1,0 +1,157 @@
+      <div class="page-head">
+        <div>
+          <h1>졸업생 진로 추적</h1>
+          <p>대학원 졸업생의 진로 정보를 등록·관리하고, 졸업 1·3·5년 차 추적조사를 이메일 설문으로 수행하여 연차별 추이와 통계를 제공합니다.</p>
+        </div>
+        <div class="row">
+          <button class="btn" onclick="toast('졸업생 진로정보 엑셀을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>엑셀 다운로드</button>
+          <button class="btn pri" onclick="openReg(null,'admin')"><span data-i="plus" data-c="sm"></span>진로 정보 등록</button>
+        </div>
+      </div>
+
+      <div class="tabs" data-tabs="#panes">
+        <button class="tab on" data-pane="t-dash"><span data-i="bar"></span>연차별 추이·통계</button>
+        <button class="tab" data-pane="t-list"><span data-i="users"></span>진로 정보 관리</button>
+        <button class="tab" data-pane="t-svy"><span data-i="mail"></span>추적조사 관리</button>
+      </div>
+
+      <div id="panes">
+      <!-- 통계 -->
+      <section class="pane on" id="t-dash">
+        <div class="card"><div class="card-b row">
+          <b>조회 조건</b>
+          <select class="select"><option>2026년 기준</option><option>2025년 기준</option></select>
+          <select class="select"><option>전체 학과</option><option>경영학과</option><option>AI경영학과</option><option>데이터사이언스학과</option></select>
+          <select class="select"><option>전체 과정</option><option>석사</option><option>박사</option><option>통합</option></select>
+          <select class="select"><option>전체 졸업연도</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select>
+        </div></div>
+        <div class="grid g4">
+          <div class="card kpi"><div class="ic bg-p"><span data-i="grad" data-c="lg"></span></div><div><div class="l">등록 졸업생</div><div class="v">412명</div><div class="s">최근 5개년 졸업자</div></div></div>
+          <div class="card kpi"><div class="ic bg-g"><span data-i="check" data-c="lg"></span></div><div><div class="l">진로 정보 확보율</div><div class="v">78.4%</div><div class="s">323명 / 412명</div></div></div>
+          <div class="card kpi"><div class="ic bg-b"><span data-i="brief" data-c="lg"></span></div><div><div class="l">취업률 (확보자 기준)</div><div class="v">66.3%</div><div class="s">진학·창업 포함 시 90.1%</div></div></div>
+          <div class="card kpi"><div class="ic bg-a"><span data-i="mail" data-c="lg"></span></div><div><div class="l">진행 중 조사 회신율</div><div class="v">52.7%</div><div class="s">2026 하반기 1·3·5년차</div></div></div>
+        </div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3>졸업 연차별 진로 구성 추이</h3><span class="desc">1·3·5년차 추적조사 결과 (%)</span></div>
+            <div class="card-b"><div class="chart" id="cStack"></div><div class="legend" id="lgStack" style="margin-top:8px"></div></div></div>
+          <div class="card"><div class="card-h"><h3>연차별 응답 현황</h3></div><div class="card-b" id="cResp" style="display:flex;flex-direction:column;gap:16px"></div></div>
+        </div>
+        <div class="grid g3">
+          <div class="card"><div class="card-h"><h3>졸업코호트별 취업률 추이</h3></div><div class="card-b chart" id="cCohort"></div></div>
+          <div class="card"><div class="card-h"><h3>취업 기관 유형</h3><span class="desc">전 연차 합산</span></div><div class="card-b" id="cOrg" style="display:flex;flex-direction:column;gap:11px"></div></div>
+          <div class="card"><div class="card-h"><h3>입력 경로별 비율</h3><span class="desc">이원 입력 체계</span></div><div class="card-b"><div id="cSrc" class="chart"></div><div class="legend" id="lgSrc" style="justify-content:center;margin-top:8px"></div></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>연차별 상세 통계표</h3></div><div class="card-b"><div class="tbl-wrap"><table class="tbl" id="tStat"></table></div></div></div>
+      </section>
+
+      <!-- 진로 정보 관리 -->
+      <section class="pane" id="t-list">
+        <div class="card"><div class="card-b row">
+          <input class="input" id="lq" placeholder="이름·학번·기관명 검색" style="width:240px">
+          <select class="select" id="lType"><option value="">전체 진로유형</option><option>취업</option><option>진학</option><option>창업</option><option>기타</option><option value="미등록">미등록</option></select>
+          <select class="select" id="lYr"><option value="">전체 졸업연도</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select>
+          <select class="select" id="lSrc"><option value="">전체 입력경로</option><option>본인</option><option>관리자 보완</option></select>
+          <span class="spacer"></span><span class="muted small" id="lCnt"></span>
+        </div></div>
+        <div class="card"><div class="card-b" style="padding:0"><div class="tbl-wrap" style="border:0"><table class="tbl"><thead><tr><th>이름</th><th>학번</th><th>학과·과정</th><th class="c">졸업</th><th class="c">연차</th><th>진로 유형</th><th>상세 (기관/학교/기업)</th><th>입력 주체</th><th>최종 입력일시</th><th class="c">관리</th></tr></thead><tbody id="lBody"></tbody></table></div></div></div>
+        <div class="note info"><span data-i="shield"></span><div><b>이원 입력 체계</b> · 졸업생 본인 입력과 관리자(학과·대학원) 보완 입력은 <b>별도 이력으로 저장</b>되며, 관리자 보완 입력이 본인 입력값을 덮어쓰지 않습니다. 통계에는 <b>본인 입력값을 우선</b>하고 본인 입력이 없는 경우에 한해 관리자 보완값이 반영됩니다.</div></div>
+      </section>
+
+      <!-- 추적조사 -->
+      <section class="pane" id="t-svy">
+        <div class="card"><div class="card-h"><h3>추적조사 진행 절차</h3></div><div class="card-b">
+          <div class="steps">
+            <div class="step done"><span class="n">STEP 1</span><b>대상·문항 설정</b><span class="muted">연차(1·3·5)·문항 선택</span></div>
+            <div class="step done"><span class="n">STEP 2</span><b>고유 링크 생성</b><span class="muted">졸업생별 토큰 URL</span></div>
+            <div class="step cur"><span class="n">STEP 3</span><b>이메일 발송</b><span class="muted">기본 채널: 이메일</span></div>
+            <div class="step"><span class="n">STEP 4</span><b>발송·열람·회신 확인</b><span class="muted">미회신자 재발송</span></div>
+            <div class="step"><span class="n">STEP 5</span><b>미회신 보완 입력</b><span class="muted">관리자 보완 입력</span></div>
+          </div></div></div>
+
+        <div class="grid g-12" style="align-items:start">
+          <div class="card">
+            <div class="card-h"><h3>조사 설정</h3><span class="badge b-bl">2026 하반기</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div class="field"><label>조사명</label><input class="input" value="2026년 하반기 졸업생 진로 추적조사"></div>
+              <div class="field"><label>조사 대상 (졸업 연차)</label><div class="row" style="gap:16px"><label class="chk"><input type="checkbox" checked id="y1">1년 차 <span class="muted small">(2025 졸업)</span></label><label class="chk"><input type="checkbox" checked id="y3">3년 차 <span class="muted small">(2023)</span></label><label class="chk"><input type="checkbox" checked id="y5">5년 차 <span class="muted small">(2021)</span></label></div></div>
+              <div class="grid g2" style="gap:10px"><div class="field"><label>조사 기간</label><input class="input" type="date" value="2026-10-05"></div><div class="field"><label>&nbsp;</label><input class="input" type="date" value="2026-11-05"></div></div>
+              <div class="field"><label>설문 문항 (기본 + 선택)</label>
+                <div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:#fcfafa">
+                  <label class="chk"><input type="checkbox" checked disabled>진로 유형 (취업·진학·창업·기타) <span class="badge b-gy">필수</span></label>
+                  <label class="chk"><input type="checkbox" checked disabled>유형별 세부 정보 <span class="badge b-gy">필수</span></label>
+                  <label class="chk"><input type="checkbox" checked>전공 일치도 · 진로 만족도</label>
+                  <label class="chk"><input type="checkbox" checked>재학 중 교육과정 도움 정도</label>
+                  <label class="chk"><input type="checkbox">대학원 발전 제언 (서술)</label>
+                  <button class="btn dash xs" style="align-self:flex-start;margin-top:4px" onclick="toast('문항 추가')"><span data-i="plus" data-c="sm"></span>문항 추가</button>
+                </div></div>
+              <div class="field"><label>발송 채널</label><select class="select"><option>이메일 (기본)</option><option disabled>SMS · 알림톡 (사업범위 제외)</option></select></div>
+              <div class="field"><label>이메일 제목</label><input class="input" value="[고려대학교 대학원] 졸업생 진로 추적조사 참여 안내"></div>
+              <div class="row"><button class="btn" onclick="openModal('m-mail')"><span data-i="eye" data-c="sm"></span>메일·설문 미리보기</button><button class="btn pri" onclick="sendAll()"><span data-i="send" data-c="sm"></span>링크 생성 및 발송</button></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div class="grid g4" style="gap:12px">
+              <div class="card kpi" style="padding:14px"><div><div class="l">발송</div><div class="v" id="s1">-</div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">열람</div><div class="v" id="s2">-</div><div class="s" id="s2s"></div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">회신</div><div class="v" id="s3" style="color:var(--green)">-</div><div class="s" id="s3s"></div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">미회신</div><div class="v" id="s4" style="color:var(--destructive)">-</div><div class="s">재발송·보완 대상</div></div></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><h3>발송·열람·회신 현황</h3>
+                <div class="row"><select class="select" id="sf"><option value="">전체 상태</option><option>회신</option><option>열람</option><option>발송</option><option>반송</option></select>
+                <button class="btn sm" onclick="resendAll()"><span data-i="refresh" data-c="sm"></span>미회신자 일괄 재발송</button></div></div>
+              <div class="card-b" style="padding:0"><div class="tbl-wrap" style="border:0"><table class="tbl"><thead><tr><th>이름</th><th class="c">연차</th><th>이메일</th><th>발송</th><th>열람</th><th>회신</th><th class="c">재발송</th><th class="c">상태</th><th class="c">처리</th></tr></thead><tbody id="sBody"></tbody></table></div></div>
+            </div>
+            <div class="note warn"><span data-i="info"></span><div>졸업생이 링크로 입력한 진로 정보는 <b>별도 처리 없이 자동 반영</b>되며 <b>‘본인 입력’ 이력</b>으로 기록됩니다. 기한 내 <b>미회신자</b>는 ‘보완입력’ 버튼으로 관리자가 직접 입력(이원 입력 체계)합니다. 토큰은 1인 1링크이며 조사 종료 시 만료됩니다.</div></div>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <!-- 진로정보 등록/수정 Drawer -->
+      <div class="overlay" id="m-reg"><div class="modal lg">
+        <div class="modal-h"><div><h2 id="rgTitle">진로 정보 등록</h2><div class="muted small" id="rgSub"></div></div><button class="x" onclick="closeModal('m-reg')">×</button></div>
+        <div class="modal-b">
+          <div class="grid g2" style="align-items:start">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="row"><b>입력 주체</b>
+                <div class="tabs" id="rgWho" style="padding:3px"><button class="tab on" data-w="self" style="padding:5px 12px;font-size:13px">졸업생 본인</button><button class="tab" data-w="admin" style="padding:5px 12px;font-size:13px">관리자 보완</button></div></div>
+              <div id="rgWhoNote" class="note info"></div>
+              <div class="grid g2" style="gap:10px">
+                <div class="field"><label>졸업생 *</label><select class="select" id="rgStu"></select></div>
+                <div class="field"><label>기준 연차</label><select class="select" id="rgYr"><option>1년 차</option><option>3년 차</option><option>5년 차</option><option>수시 등록</option></select></div>
+              </div>
+              <div class="field"><label>진로 유형 *</label>
+                <div class="row" id="rgType" style="gap:8px"></div></div>
+              <div id="rgForm" style="display:flex;flex-direction:column;gap:10px"></div>
+              <div class="field"><label>비고</label><textarea class="input" rows="2" placeholder="특이사항·확인 근거 (관리자 보완 시 근거 기재)"></textarea></div>
+            </div>
+            <div>
+              <div class="card" style="box-shadow:none"><div class="card-h" style="padding:12px 16px"><h3><span data-i="hist" data-c="sm"></span>입력 이력</h3><span class="desc">덮어쓰기 없이 누적</span></div>
+                <div class="card-b" style="padding:16px"><div id="rgCmp" class="grid g2" style="gap:10px;margin-bottom:14px"></div><div class="timeline" id="rgHist"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-reg')">취소</button><button class="btn pri" onclick="saveReg()">저장 (이력 추가)</button></div>
+      </div></div>
+
+      <!-- 메일/설문 미리보기 -->
+      <div class="overlay" id="m-mail"><div class="modal lg">
+        <div class="modal-h"><h2>이메일 · 졸업생 설문 미리보기</h2><button class="x" onclick="closeModal('m-mail')">×</button></div>
+        <div class="modal-b"><div class="grid g2" style="align-items:start">
+          <div class="card" style="box-shadow:none"><div class="card-h" style="padding:10px 14px;background:#faf7f7"><span class="small"><b>받는 사람</b> minjun.kim@korea.ac.kr<br><b>제목</b> [고려대학교 대학원] 졸업생 진로 추적조사 참여 안내</span></div>
+            <div class="card-b" style="font-size:13.5px;display:flex;flex-direction:column;gap:12px"><img src="../public/images/korea-univ-logo.png" style="height:34px;align-self:flex-start"><p>김민준 님, 안녕하세요.<br>고려대학교 대학원입니다. 졸업 <b>1년 차</b> 진로 현황 조사에 참여해 주세요. 응답하신 내용은 대학원 교육 개선과 통계 목적으로만 활용됩니다.</p>
+              <a class="btn pri" style="align-self:flex-start" href="javascript:void(0)">설문 참여하기</a>
+              <div class="note" style="background:#f6f6f6;font-size:12px;word-break:break-all">개인 전용 링크 (타인에게 공유하지 마세요)<br>https://cms.korea.ac.kr/survey/track?t=8f3a9c2d1e4b7a60c5d2</div>
+              <p class="muted small">참여 기한: 2026-11-05 · 본 메일은 발신 전용입니다.</p></div></div>
+          <div class="card" style="box-shadow:none"><div class="card-h" style="padding:10px 14px;background:var(--primary);color:#fff;border-radius:10px 10px 0 0"><b>졸업생 진로 추적조사 (1년 차)</b></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div class="note pri small">별도 로그인 없이 개인 링크로 접속합니다. 제출 즉시 진로 정보에 반영됩니다.</div>
+              <div class="field"><label>현재 진로 상태 *</label><div class="row"><label class="chk"><input type="radio" name="pv" checked>취업</label><label class="chk"><input type="radio" name="pv">진학</label><label class="chk"><input type="radio" name="pv">창업</label><label class="chk"><input type="radio" name="pv">기타</label></div></div>
+              <div class="grid g2" style="gap:10px"><div class="field"><label>기관 유형</label><select class="select"><option>대기업</option></select></div><div class="field"><label>고용 형태</label><select class="select"><option>정규직</option></select></div></div>
+              <div class="field"><label>기관명</label><input class="input" value="" placeholder="예) 삼성전자"></div>
+              <div class="field"><label>전공 일치도</label><select class="select"><option>매우 일치</option></select></div>
+              <button class="btn pri" onclick="toast('시안: 제출 시 본인 입력 이력으로 자동 반영됩니다')">제출</button></div></div>
+        </div></div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-mail')">닫기</button></div>
+      </div></div>

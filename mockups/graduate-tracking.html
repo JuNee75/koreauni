@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>졸업생 진로 추적 | 고려대학교 대학원 역량관리시스템</title>
+<style>:root{
+  --background:#fafafa;--foreground:#242424;--card:#fff;--border:#e8e8e8;--input:#e8e8e8;
+  --primary:#7E191B;--primary-d:#5e1214;--primary-fg:#fff;--primary-10:rgba(126,25,27,.08);
+  --secondary:#f5f0f0;--muted:#f5f0f0;--muted-fg:#6b5a5a;--sub:#6b7280;
+  --destructive:#B23A3C;
+  --c1:#7E191B;--c2:#9C2A2C;--c3:#B23A3C;--c4:#C86A6C;--c5:#E5B3B4;
+  --blue:#2563eb;--green:#16a34a;--amber:#d97706;--indigo:#4f46e5;--teal:#0d9488;--rose:#e11d48;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;border-color:var(--border)}
+html{font-size:15px}
+body{font-family:'Pretendard','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;background:var(--background);color:var(--foreground);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1{font-size:20px;font-weight:700} h2{font-size:17px;font-weight:700} h3{font-size:15px;font-weight:700}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.i.sm{width:14px;height:14px} svg.i.lg{width:22px;height:22px}
+
+/* ── admin shell ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:272px;flex:none;background:#fff;border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar .logo{height:64px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border)}
+.sidebar .logo img{height:36px}
+.sidebar nav{padding:24px 12px;display:flex;flex-direction:column;gap:10px}
+.menu-btn{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 16px;border:0;background:none;border-radius:8px;font-size:15.5px;font-weight:600;color:#262626;text-align:left}
+.menu-btn:hover{background:var(--secondary)}
+.menu-btn.active{background:var(--secondary);color:var(--primary)}
+.menu-btn .grow{flex:1}
+.menu-btn .chev{width:16px;height:16px;color:#9a8a8a;transition:.2s}
+.menu-group.open .chev{transform:rotate(180deg)}
+.submenu{display:none;margin:6px 0 0 24px;padding-left:16px;border-left:1px solid var(--border);flex-direction:column;gap:6px}
+.menu-group.open .submenu{display:flex}
+.submenu a{display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:6px;font-size:14.5px;color:#444}
+.submenu a:hover{background:var(--secondary)}
+.submenu a.active{background:var(--secondary);color:var(--primary);font-weight:700}
+.new-dot{font-size:10px;font-weight:700;color:#fff;background:var(--primary);border-radius:999px;padding:1px 6px;margin-left:auto}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.header{height:64px;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.header .t{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700}
+.header .t svg{color:var(--primary);width:24px;height:24px}
+.header .r{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.page{padding:28px 32px;display:flex;flex-direction:column;gap:22px;max-width:1500px;width:100%}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.page-head p{color:var(--sub);font-size:14px;margin-top:4px}
+
+/* ── primitives ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.card-h{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.card-h h3{display:flex;align-items:center;gap:8px}
+.card-h .desc{font-size:12.5px;color:var(--sub);font-weight:400}
+.card-b{padding:20px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+.g-21{grid-template-columns:2fr 1fr} .g-12{grid-template-columns:1fr 2fr} .g-32{grid-template-columns:3fr 2fr}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.spacer{flex:1}
+.kpi{display:flex;align-items:center;gap:14px;padding:18px 20px}
+.kpi .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .l{font-size:12.5px;color:var(--sub)} .kpi .v{font-size:25px;font-weight:700;line-height:1.2} .kpi .s{font-size:12px;color:var(--sub)}
+.bg-p{background:var(--primary-10);color:var(--primary)} .bg-b{background:#eff6ff;color:var(--blue)} .bg-g{background:#f0fdf4;color:var(--green)} .bg-a{background:#fffbeb;color:var(--amber)} .bg-i{background:#eef2ff;color:var(--indigo)} .bg-t{background:#f0fdfa;color:var(--teal)} .bg-r{background:#fff1f2;color:var(--rose)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:#333}
+.btn:hover{background:var(--secondary)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff} .btn.pri:hover{background:var(--primary-d)}
+.btn.sm{height:30px;padding:0 10px;font-size:12.5px} .btn.xs{height:26px;padding:0 8px;font-size:12px}
+.btn.dash{border-style:dashed;border-color:rgba(126,25,27,.4);color:var(--primary)}
+.btn.danger{color:var(--destructive)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.input,.select,textarea.input{height:36px;border:1px solid var(--input);border-radius:8px;background:#fff;padding:0 12px;font-size:13.5px;font-family:inherit;color:inherit;min-width:0}
+textarea.input{height:auto;padding:8px 12px;width:100%;resize:vertical}
+.input:focus,.select:focus{outline:2px solid rgba(126,25,27,.25);border-color:var(--primary)}
+.select{padding-right:28px}
+.field{display:flex;flex-direction:column;gap:5px} .field label{font-size:12.5px;font-weight:600;color:#555}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--border);padding:1px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-gr{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}.b-am{background:#fffbeb;color:#b45309;border-color:#fde68a}.b-bl{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}.b-rd{background:#fef2f2;color:#b91c1c;border-color:#fecaca}.b-gy{background:#f3f4f6;color:#4b5563;border-color:#e5e7eb}.b-in{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}.b-pu{background:#faf5ff;color:#7e22ce;border-color:#e9d5ff}.b-pr{background:var(--primary-10);color:var(--primary);border-color:rgba(126,25,27,.25)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;background:#f1ecec;padding:6px;border-radius:10px}
+.tab{display:flex;align-items:center;gap:8px;border:0;background:none;border-radius:7px;padding:9px 18px;font-size:14.5px;font-weight:600;color:#555}
+.tab:hover{background:rgba(255,255,255,.6)}
+.tab.on{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.pane{display:none;flex-direction:column;gap:20px} .pane.on{display:flex}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff}
+.tbl th{background:#f7f3f3;text-align:left;font-weight:600;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:13px}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr:hover{background:#fbf8f8}
+.tbl .c{text-align:center} .tbl .r{text-align:right}
+.tbl tr.sel{background:var(--primary-10)}
+.muted{color:var(--sub)} .small{font-size:12.5px} .bold{font-weight:700} .pri-c{color:var(--primary)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.55}
+.note.info{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.note.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.note.pri{background:var(--primary-10);color:var(--primary-d);border:1px solid rgba(126,25,27,.2)}
+.note.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.bar{height:8px;border-radius:99px;background:#eee;overflow:hidden;position:relative}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.bar-row{display:grid;grid-template-columns:130px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+.bar-row .n{color:#444} .bar-row .v{text-align:right;font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#555}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart svg{width:100%;height:auto;display:block}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.chk input{accent-color:var(--primary);width:16px;height:16px}
+.divider{height:1px;background:var(--border)}
+.steps{display:flex;gap:0;flex-wrap:wrap}
+.step{flex:1;min-width:150px;padding:12px 14px;border:1px solid var(--border);background:#fff;position:relative;font-size:13px}
+.step:first-child{border-radius:8px 0 0 8px}.step:last-child{border-radius:0 8px 8px 0}
+.step .n{font-size:11px;font-weight:700;color:var(--sub)} .step b{display:block;margin:2px 0}
+.step.done{background:#f0fdf4;border-color:#bbf7d0}.step.cur{background:var(--primary-10);border-color:rgba(126,25,27,.35)}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:22px}
+.timeline:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:#e5dede}
+.tl{position:relative;padding:0 0 16px}
+.tl:before{content:"";position:absolute;left:-21px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.tl.admin:before{border-color:var(--blue)} .tl.sys:before{border-color:#9ca3af}
+.tl .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}
+.tl .b{font-size:13px;color:#444;margin-top:3px;background:#faf7f7;border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.pager{display:flex;gap:4px;justify-content:center}
+.pager button{min-width:30px;height:30px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12.5px}
+.pager button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.proto{position:fixed;right:14px;bottom:14px;z-index:60;background:rgba(36,36,36,.88);color:#fff;font-size:11.5px;padding:6px 12px;border-radius:99px}
+
+/* modal / drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:12px;width:min(780px,100%);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal.lg{width:min(1000px,100%)}
+.modal-h{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-b{padding:20px 22px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.modal-f{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.x{border:0;background:none;font-size:22px;line-height:1;color:#777}
+.toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);background:#262626;color:#fff;padding:10px 18px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.switch{position:relative;width:38px;height:22px;display:inline-block}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#d4d4d4;border-radius:99px;transition:.2s;cursor:pointer}
+.switch span:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+span{background:var(--primary)} .switch input:checked+span:before{transform:translateX(16px)}
+
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g-21,.g-12,.g-32{grid-template-columns:1fr}.sidebar{display:none}.page{padding:20px 16px}.header{padding:0 16px}}
+@media(max-width:700px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><img src="../public/images/logo_on.png" alt="고려대학교 로고"></div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <div class="main">
+    <header class="header">
+      <div class="t"><span data-i="grad"></span>졸업생 진로 추적 관리</div>
+      <div class="r">
+        <a class="btn sm" href="learner-mypage.html">사용자모드로 전환</a>
+        <span style="position:relative;display:flex"><span data-i="bell"></span><i style="position:absolute;right:0;top:0;width:8px;height:8px;border-radius:50%;background:var(--destructive)"></i></span>
+        <div class="row" style="gap:8px"><div class="avatar">관</div><div style="line-height:1.2"><b style="font-size:13px">관리자</b><div class="muted" style="font-size:11.5px">admin@korea.ac.kr</div></div></div>
+      </div>
+    </header>
+    <main class="page">
+      <div class="page-head">
+        <div>
+          <h1>졸업생 진로 추적</h1>
+          <p>대학원 졸업생의 진로 정보를 등록·관리하고, 졸업 1·3·5년 차 추적조사를 이메일 설문으로 수행하여 연차별 추이와 통계를 제공합니다.</p>
+        </div>
+        <div class="row">
+          <button class="btn" onclick="toast('졸업생 진로정보 엑셀을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>엑셀 다운로드</button>
+          <button class="btn pri" onclick="openReg(null,'admin')"><span data-i="plus" data-c="sm"></span>진로 정보 등록</button>
+        </div>
+      </div>
+
+      <div class="tabs" data-tabs="#panes">
+        <button class="tab on" data-pane="t-dash"><span data-i="bar"></span>연차별 추이·통계</button>
+        <button class="tab" data-pane="t-list"><span data-i="users"></span>진로 정보 관리</button>
+        <button class="tab" data-pane="t-svy"><span data-i="mail"></span>추적조사 관리</button>
+      </div>
+
+      <div id="panes">
+      <!-- 통계 -->
+      <section class="pane on" id="t-dash">
+        <div class="card"><div class="card-b row">
+          <b>조회 조건</b>
+          <select class="select"><option>2026년 기준</option><option>2025년 기준</option></select>
+          <select class="select"><option>전체 학과</option><option>경영학과</option><option>AI경영학과</option><option>데이터사이언스학과</option></select>
+          <select class="select"><option>전체 과정</option><option>석사</option><option>박사</option><option>통합</option></select>
+          <select class="select"><option>전체 졸업연도</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select>
+        </div></div>
+        <div class="grid g4">
+          <div class="card kpi"><div class="ic bg-p"><span data-i="grad" data-c="lg"></span></div><div><div class="l">등록 졸업생</div><div class="v">412명</div><div class="s">최근 5개년 졸업자</div></div></div>
+          <div class="card kpi"><div class="ic bg-g"><span data-i="check" data-c="lg"></span></div><div><div class="l">진로 정보 확보율</div><div class="v">78.4%</div><div class="s">323명 / 412명</div></div></div>
+          <div class="card kpi"><div class="ic bg-b"><span data-i="brief" data-c="lg"></span></div><div><div class="l">취업률 (확보자 기준)</div><div class="v">66.3%</div><div class="s">진학·창업 포함 시 90.1%</div></div></div>
+          <div class="card kpi"><div class="ic bg-a"><span data-i="mail" data-c="lg"></span></div><div><div class="l">진행 중 조사 회신율</div><div class="v">52.7%</div><div class="s">2026 하반기 1·3·5년차</div></div></div>
+        </div>
+        <div class="grid g-21">
+          <div class="card"><div class="card-h"><h3>졸업 연차별 진로 구성 추이</h3><span class="desc">1·3·5년차 추적조사 결과 (%)</span></div>
+            <div class="card-b"><div class="chart" id="cStack"></div><div class="legend" id="lgStack" style="margin-top:8px"></div></div></div>
+          <div class="card"><div class="card-h"><h3>연차별 응답 현황</h3></div><div class="card-b" id="cResp" style="display:flex;flex-direction:column;gap:16px"></div></div>
+        </div>
+        <div class="grid g3">
+          <div class="card"><div class="card-h"><h3>졸업코호트별 취업률 추이</h3></div><div class="card-b chart" id="cCohort"></div></div>
+          <div class="card"><div class="card-h"><h3>취업 기관 유형</h3><span class="desc">전 연차 합산</span></div><div class="card-b" id="cOrg" style="display:flex;flex-direction:column;gap:11px"></div></div>
+          <div class="card"><div class="card-h"><h3>입력 경로별 비율</h3><span class="desc">이원 입력 체계</span></div><div class="card-b"><div id="cSrc" class="chart"></div><div class="legend" id="lgSrc" style="justify-content:center;margin-top:8px"></div></div></div>
+        </div>
+        <div class="card"><div class="card-h"><h3>연차별 상세 통계표</h3></div><div class="card-b"><div class="tbl-wrap"><table class="tbl" id="tStat"></table></div></div></div>
+      </section>
+
+      <!-- 진로 정보 관리 -->
+      <section class="pane" id="t-list">
+        <div class="card"><div class="card-b row">
+          <input class="input" id="lq" placeholder="이름·학번·기관명 검색" style="width:240px">
+          <select class="select" id="lType"><option value="">전체 진로유형</option><option>취업</option><option>진학</option><option>창업</option><option>기타</option><option value="미등록">미등록</option></select>
+          <select class="select" id="lYr"><option value="">전체 졸업연도</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select>
+          <select class="select" id="lSrc"><option value="">전체 입력경로</option><option>본인</option><option>관리자 보완</option></select>
+          <span class="spacer"></span><span class="muted small" id="lCnt"></span>
+        </div></div>
+        <div class="card"><div class="card-b" style="padding:0"><div class="tbl-wrap" style="border:0"><table class="tbl"><thead><tr><th>이름</th><th>학번</th><th>학과·과정</th><th class="c">졸업</th><th class="c">연차</th><th>진로 유형</th><th>상세 (기관/학교/기업)</th><th>입력 주체</th><th>최종 입력일시</th><th class="c">관리</th></tr></thead><tbody id="lBody"></tbody></table></div></div></div>
+        <div class="note info"><span data-i="shield"></span><div><b>이원 입력 체계</b> · 졸업생 본인 입력과 관리자(학과·대학원) 보완 입력은 <b>별도 이력으로 저장</b>되며, 관리자 보완 입력이 본인 입력값을 덮어쓰지 않습니다. 통계에는 <b>본인 입력값을 우선</b>하고 본인 입력이 없는 경우에 한해 관리자 보완값이 반영됩니다.</div></div>
+      </section>
+
+      <!-- 추적조사 -->
+      <section class="pane" id="t-svy">
+        <div class="card"><div class="card-h"><h3>추적조사 진행 절차</h3></div><div class="card-b">
+          <div class="steps">
+            <div class="step done"><span class="n">STEP 1</span><b>대상·문항 설정</b><span class="muted">연차(1·3·5)·문항 선택</span></div>
+            <div class="step done"><span class="n">STEP 2</span><b>고유 링크 생성</b><span class="muted">졸업생별 토큰 URL</span></div>
+            <div class="step cur"><span class="n">STEP 3</span><b>이메일 발송</b><span class="muted">기본 채널: 이메일</span></div>
+            <div class="step"><span class="n">STEP 4</span><b>발송·열람·회신 확인</b><span class="muted">미회신자 재발송</span></div>
+            <div class="step"><span class="n">STEP 5</span><b>미회신 보완 입력</b><span class="muted">관리자 보완 입력</span></div>
+          </div></div></div>
+
+        <div class="grid g-12" style="align-items:start">
+          <div class="card">
+            <div class="card-h"><h3>조사 설정</h3><span class="badge b-bl">2026 하반기</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div class="field"><label>조사명</label><input class="input" value="2026년 하반기 졸업생 진로 추적조사"></div>
+              <div class="field"><label>조사 대상 (졸업 연차)</label><div class="row" style="gap:16px"><label class="chk"><input type="checkbox" checked id="y1">1년 차 <span class="muted small">(2025 졸업)</span></label><label class="chk"><input type="checkbox" checked id="y3">3년 차 <span class="muted small">(2023)</span></label><label class="chk"><input type="checkbox" checked id="y5">5년 차 <span class="muted small">(2021)</span></label></div></div>
+              <div class="grid g2" style="gap:10px"><div class="field"><label>조사 기간</label><input class="input" type="date" value="2026-10-05"></div><div class="field"><label>&nbsp;</label><input class="input" type="date" value="2026-11-05"></div></div>
+              <div class="field"><label>설문 문항 (기본 + 선택)</label>
+                <div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:#fcfafa">
+                  <label class="chk"><input type="checkbox" checked disabled>진로 유형 (취업·진학·창업·기타) <span class="badge b-gy">필수</span></label>
+                  <label class="chk"><input type="checkbox" checked disabled>유형별 세부 정보 <span class="badge b-gy">필수</span></label>
+                  <label class="chk"><input type="checkbox" checked>전공 일치도 · 진로 만족도</label>
+                  <label class="chk"><input type="checkbox" checked>재학 중 교육과정 도움 정도</label>
+                  <label class="chk"><input type="checkbox">대학원 발전 제언 (서술)</label>
+                  <button class="btn dash xs" style="align-self:flex-start;margin-top:4px" onclick="toast('문항 추가')"><span data-i="plus" data-c="sm"></span>문항 추가</button>
+                </div></div>
+              <div class="field"><label>발송 채널</label><select class="select"><option>이메일 (기본)</option><option disabled>SMS · 알림톡 (사업범위 제외)</option></select></div>
+              <div class="field"><label>이메일 제목</label><input class="input" value="[고려대학교 대학원] 졸업생 진로 추적조사 참여 안내"></div>
+              <div class="row"><button class="btn" onclick="openModal('m-mail')"><span data-i="eye" data-c="sm"></span>메일·설문 미리보기</button><button class="btn pri" onclick="sendAll()"><span data-i="send" data-c="sm"></span>링크 생성 및 발송</button></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div class="grid g4" style="gap:12px">
+              <div class="card kpi" style="padding:14px"><div><div class="l">발송</div><div class="v" id="s1">-</div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">열람</div><div class="v" id="s2">-</div><div class="s" id="s2s"></div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">회신</div><div class="v" id="s3" style="color:var(--green)">-</div><div class="s" id="s3s"></div></div></div>
+              <div class="card kpi" style="padding:14px"><div><div class="l">미회신</div><div class="v" id="s4" style="color:var(--destructive)">-</div><div class="s">재발송·보완 대상</div></div></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><h3>발송·열람·회신 현황</h3>
+                <div class="row"><select class="select" id="sf"><option value="">전체 상태</option><option>회신</option><option>열람</option><option>발송</option><option>반송</option></select>
+                <button class="btn sm" onclick="resendAll()"><span data-i="refresh" data-c="sm"></span>미회신자 일괄 재발송</button></div></div>
+              <div class="card-b" style="padding:0"><div class="tbl-wrap" style="border:0"><table class="tbl"><thead><tr><th>이름</th><th class="c">연차</th><th>이메일</th><th>발송</th><th>열람</th><th>회신</th><th class="c">재발송</th><th class="c">상태</th><th class="c">처리</th></tr></thead><tbody id="sBody"></tbody></table></div></div>
+            </div>
+            <div class="note warn"><span data-i="info"></span><div>졸업생이 링크로 입력한 진로 정보는 <b>별도 처리 없이 자동 반영</b>되며 <b>‘본인 입력’ 이력</b>으로 기록됩니다. 기한 내 <b>미회신자</b>는 ‘보완입력’ 버튼으로 관리자가 직접 입력(이원 입력 체계)합니다. 토큰은 1인 1링크이며 조사 종료 시 만료됩니다.</div></div>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <!-- 진로정보 등록/수정 Drawer -->
+      <div class="overlay" id="m-reg"><div class="modal lg">
+        <div class="modal-h"><div><h2 id="rgTitle">진로 정보 등록</h2><div class="muted small" id="rgSub"></div></div><button class="x" onclick="closeModal('m-reg')">×</button></div>
+        <div class="modal-b">
+          <div class="grid g2" style="align-items:start">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="row"><b>입력 주체</b>
+                <div class="tabs" id="rgWho" style="padding:3px"><button class="tab on" data-w="self" style="padding:5px 12px;font-size:13px">졸업생 본인</button><button class="tab" data-w="admin" style="padding:5px 12px;font-size:13px">관리자 보완</button></div></div>
+              <div id="rgWhoNote" class="note info"></div>
+              <div class="grid g2" style="gap:10px">
+                <div class="field"><label>졸업생 *</label><select class="select" id="rgStu"></select></div>
+                <div class="field"><label>기준 연차</label><select class="select" id="rgYr"><option>1년 차</option><option>3년 차</option><option>5년 차</option><option>수시 등록</option></select></div>
+              </div>
+              <div class="field"><label>진로 유형 *</label>
+                <div class="row" id="rgType" style="gap:8px"></div></div>
+              <div id="rgForm" style="display:flex;flex-direction:column;gap:10px"></div>
+              <div class="field"><label>비고</label><textarea class="input" rows="2" placeholder="특이사항·확인 근거 (관리자 보완 시 근거 기재)"></textarea></div>
+            </div>
+            <div>
+              <div class="card" style="box-shadow:none"><div class="card-h" style="padding:12px 16px"><h3><span data-i="hist" data-c="sm"></span>입력 이력</h3><span class="desc">덮어쓰기 없이 누적</span></div>
+                <div class="card-b" style="padding:16px"><div id="rgCmp" class="grid g2" style="gap:10px;margin-bottom:14px"></div><div class="timeline" id="rgHist"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-reg')">취소</button><button class="btn pri" onclick="saveReg()">저장 (이력 추가)</button></div>
+      </div></div>
+
+      <!-- 메일/설문 미리보기 -->
+      <div class="overlay" id="m-mail"><div class="modal lg">
+        <div class="modal-h"><h2>이메일 · 졸업생 설문 미리보기</h2><button class="x" onclick="closeModal('m-mail')">×</button></div>
+        <div class="modal-b"><div class="grid g2" style="align-items:start">
+          <div class="card" style="box-shadow:none"><div class="card-h" style="padding:10px 14px;background:#faf7f7"><span class="small"><b>받는 사람</b> minjun.kim@korea.ac.kr<br><b>제목</b> [고려대학교 대학원] 졸업생 진로 추적조사 참여 안내</span></div>
+            <div class="card-b" style="font-size:13.5px;display:flex;flex-direction:column;gap:12px"><img src="../public/images/korea-univ-logo.png" style="height:34px;align-self:flex-start"><p>김민준 님, 안녕하세요.<br>고려대학교 대학원입니다. 졸업 <b>1년 차</b> 진로 현황 조사에 참여해 주세요. 응답하신 내용은 대학원 교육 개선과 통계 목적으로만 활용됩니다.</p>
+              <a class="btn pri" style="align-self:flex-start" href="javascript:void(0)">설문 참여하기</a>
+              <div class="note" style="background:#f6f6f6;font-size:12px;word-break:break-all">개인 전용 링크 (타인에게 공유하지 마세요)<br>https://cms.korea.ac.kr/survey/track?t=8f3a9c2d1e4b7a60c5d2</div>
+              <p class="muted small">참여 기한: 2026-11-05 · 본 메일은 발신 전용입니다.</p></div></div>
+          <div class="card" style="box-shadow:none"><div class="card-h" style="padding:10px 14px;background:var(--primary);color:#fff;border-radius:10px 10px 0 0"><b>졸업생 진로 추적조사 (1년 차)</b></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div class="note pri small">별도 로그인 없이 개인 링크로 접속합니다. 제출 즉시 진로 정보에 반영됩니다.</div>
+              <div class="field"><label>현재 진로 상태 *</label><div class="row"><label class="chk"><input type="radio" name="pv" checked>취업</label><label class="chk"><input type="radio" name="pv">진학</label><label class="chk"><input type="radio" name="pv">창업</label><label class="chk"><input type="radio" name="pv">기타</label></div></div>
+              <div class="grid g2" style="gap:10px"><div class="field"><label>기관 유형</label><select class="select"><option>대기업</option></select></div><div class="field"><label>고용 형태</label><select class="select"><option>정규직</option></select></div></div>
+              <div class="field"><label>기관명</label><input class="input" value="" placeholder="예) 삼성전자"></div>
+              <div class="field"><label>전공 일치도</label><select class="select"><option>매우 일치</option></select></div>
+              <button class="btn pri" onclick="toast('시안: 제출 시 본인 입력 이력으로 자동 반영됩니다')">제출</button></div></div>
+        </div></div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-mail')">닫기</button></div>
+      </div></div>
+
+    </main>
+  </div>
+</div>
+<div class="proto">UI 시안 · 샘플 데이터</div>
+<script>/* ── helpers shared by all mock screens ── */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+function initTabs(root=document){
+  $$('[data-tabs]',root).forEach(g=>{
+    const tabs=$$('.tab',g), scope=document.querySelector(g.dataset.tabs);
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.toggle('on',x===t));
+      $$(':scope > .pane',scope).forEach(p=>p.classList.toggle('on',p.id===t.dataset.pane));
+      window.scrollTo({top:0});
+    }));
+  });
+}
+function openModal(id){$('#'+id).classList.add('on')}
+function closeModal(id){$('#'+id).classList.remove('on')}
+document.addEventListener('click',e=>{
+  if(e.target.classList&&e.target.classList.contains('overlay'))e.target.classList.remove('on');
+  const mb=e.target.closest('.menu-group>.menu-btn'); if(mb)mb.parentElement.classList.toggle('open');
+});
+function ic(n,c=''){const p={
+ dash:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>',
+ trend:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+ bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+ user:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
+ chev:'<polyline points="6 9 12 15 18 9"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+ compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+ layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+ grad:'<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+ mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',
+ send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+ up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+ check:'<polyline points="20 6 9 17 4 12"/>', clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+ eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+ refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/>',
+ print:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+ flask:'<path d="M10 2v7.5L4 20a1 1 0 0 0 .9 1.5h14.2a1 1 0 0 0 .9-1.5L14 9.5V2"/><path d="M8.5 2h7"/>',
+ award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/>',
+ brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+ target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ hist:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+ trash:'<path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
+ star:'<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>',
+ filter:'<polygon points="22 3 2 3 10 12.5 10 19 14 21 14 12.5 22 3"/>'
+}[n]||'';return `<svg class="i ${c}" viewBox="0 0 24 24">${p}</svg>`}
+function hydrateIcons(){$$('[data-i]').forEach(e=>{e.outerHTML=ic(e.dataset.i,e.dataset.c||'')})}
+
+/* radar chart (SVG) — series:[{name,color,values[]}] */
+function radar(el,labels,series,opt={}){
+  const S=opt.size||360,cx=S/2,cy=S/2,R=S/2-62,n=labels.length,max=opt.max||100,rings=[20,40,60,80,100];
+  const pt=(i,v)=>{const a=-Math.PI/2+2*Math.PI*i/n;return[cx+R*v/max*Math.cos(a),cy+R*v/max*Math.sin(a)]};
+  let g='';rings.forEach(r=>{g+=`<polygon points="${labels.map((_,i)=>pt(i,r).join(',')).join(' ')}" fill="none" stroke="#e5dede" stroke-width="1"/>`;
+    g+=`<text x="${cx+3}" y="${cy-R*r/max+10}" font-size="9" fill="#aaa">${r}</text>`});
+  labels.forEach((l,i)=>{const[x,y]=pt(i,max),[lx,ly]=pt(i,max+14);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5dede"/>`;
+    const anc=Math.abs(lx-cx)<8?'middle':lx>cx?'start':'end';g+=`<text x="${lx}" y="${ly+4}" font-size="11.5" font-weight="600" fill="#444" text-anchor="${anc}">${l}</text>`});
+  series.forEach(s=>{const p=s.values.map((v,i)=>pt(i,v).join(',')).join(' ');
+    g+=`<polygon points="${p}" fill="${s.color}" fill-opacity="${s.fill??.18}" stroke="${s.color}" stroke-width="2" ${s.dash?'stroke-dasharray="5 4"':''}/>`;
+    if(!s.dash)s.values.forEach((v,i)=>{const[x,y]=pt(i,v);g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="${s.color}"/>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* grouped vertical bars — data:[{label,values[]}], colors[] */
+function bars(el,data,colors,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=34,B=34,T=14,max=opt.max||100,gw=(W-L-10)/data.length,k=colors.length,bw=Math.min(28,(gw-16)/k);
+  let g='';[0,25,50,75,100].filter(v=>v<=max||v===0).forEach(v=>{const y=T+(H-T-B)*(1-v/max);g+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}</text>`});
+  data.forEach((d,i)=>{const x0=L+gw*i+(gw-bw*k-(k-1)*3)/2;d.values.forEach((v,j)=>{const h=(H-T-B)*v/max,x=x0+j*(bw+3),y=H-B-h;
+    g+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="3" fill="${colors[j]}"><title>${d.label}: ${v}</title></rect>`;
+    if(opt.val!==false)g+=`<text x="${x+bw/2}" y="${y-4}" font-size="10" font-weight="600" fill="#444" text-anchor="middle">${v}</text>`});
+    g+=`<text x="${L+gw*i+gw/2}" y="${H-12}" font-size="11" fill="#555" text-anchor="middle">${d.label}</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* line chart — x labels, series:[{name,color,values[]}] */
+function lines(el,xs,series,opt={}){
+  const W=opt.w||560,H=opt.h||240,L=36,R=16,B=32,T=14,max=opt.max||100,min=opt.min||0,sx=i=>L+(W-L-R)*i/(xs.length-1||1),sy=v=>T+(H-T-B)*(1-(v-min)/(max-min));
+  let g='';const step=(max-min)/4;for(let k=0;k<=4;k++){const v=min+step*k,y=sy(v);g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${Math.round(v)}${opt.unit||''}</text>`}
+  xs.forEach((x,i)=>g+=`<text x="${sx(i)}" y="${H-10}" font-size="11" fill="#555" text-anchor="middle">${x}</text>`);
+  series.forEach(s=>{g+=`<polyline fill="none" stroke="${s.color}" stroke-width="2.5" points="${s.values.map((v,i)=>sx(i)+','+sy(v)).join(' ')}"/>`;
+    s.values.forEach((v,i)=>{g+=`<circle cx="${sx(i)}" cy="${sy(v)}" r="4" fill="#fff" stroke="${s.color}" stroke-width="2.5"><title>${s.name} ${xs[i]}: ${v}</title></circle>`;if(opt.val!==false)g+=`<text x="${sx(i)}" y="${sy(v)-9}" font-size="10" font-weight="600" fill="${s.color}" text-anchor="middle">${v}${opt.unit||''}</text>`})});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`}
+
+/* donut — parts:[{name,v,color}] */
+function donut(el,parts,center){
+  const S=180,cx=90,cy=90,r=68,sw=26,tot=parts.reduce((a,b)=>a+b.v,0);let a0=-Math.PI/2,g='';
+  parts.forEach(p=>{const a1=a0+2*Math.PI*p.v/tot,l=a1-a0>Math.PI?1:0;
+    const d=`M${cx+r*Math.cos(a0)} ${cy+r*Math.sin(a0)} A${r} ${r} 0 ${l} 1 ${cx+r*Math.cos(a1-.0001)} ${cy+r*Math.sin(a1-.0001)}`;
+    g+=`<path d="${d}" fill="none" stroke="${p.color}" stroke-width="${sw}"><title>${p.name} ${p.v}</title></path>`;a0=a1});
+  g+=`<text x="${cx}" y="${cy-2}" font-size="22" font-weight="700" text-anchor="middle" fill="#242424">${center[0]}</text><text x="${cx}" y="${cy+16}" font-size="11" text-anchor="middle" fill="#888">${center[1]}</text>`;
+  el.innerHTML=`<svg viewBox="0 0 ${S} ${S}" style="max-width:${S}px;margin:auto">${g}</svg>`}
+
+/* admin shell */
+const ADMIN_MENU=[
+ {t:'대시보드',i:'dash',u:'#'},
+ {t:'대학원 성과지표',i:'trend',s:[['핵심성과지표'],['자율성과지표']]},
+ {t:'교육연구단 성과지표',i:'users',u:'#'},
+ {t:'게시판관리',i:'file',s:[['공지사항'],['자료실']]},
+ {t:'핵심역량진단',i:'bar',s:[['진단현황'],['버전관리'],['설문지관리']]},
+ {t:'진로 트랙 검사',i:'compass',s:[['검사 운영·문항 탑재','career-track'],['결과 대시보드','career-track']],isNew:1},
+ {t:'통합 프로파일',i:'layers',u:'integrated-profile',key:'profile',isNew:1},
+ {t:'졸업생 진로 추적',i:'grad',u:'graduate-tracking',key:'grad',isNew:1},
+ {t:'학생정보',i:'user',u:'#'}
+];
+function renderAdmin(active){
+  const html=ADMIN_MENU.map(m=>{
+    if(m.s){const open=m.key===active||m.s.some(x=>x[1]===active);
+      return `<div class="menu-group ${open?'open':''}"><button class="menu-btn">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}${ic('chev','chev')}</button><div class="submenu">${m.s.map((x,k)=>`<a href="${x[1]?x[1]+'.html':'#'}" class="${x[1]===active&&(k===0||x[1]!=='career-track')?(k===0?'active':''):''}">${x[0]}</a>`).join('')}</div></div>`}
+    const on=(m.u===active||m.key===active);
+    return `<a class="menu-btn ${on?'active':''}" href="${m.u&&m.u!=='#'?m.u+'.html':'#'}">${ic(m.i,'lg')}<span class="grow">${m.t}</span>${m.isNew?'<span class="new-dot">NEW</span>':''}</a>`}).join('');
+  $('#sidebar-nav').innerHTML=html}
+
+renderAdmin('grad');initTabs();
+const TYPES=['취업','진학','창업','기타'],TC={'취업':'#2563eb','진학':'#7c3aed','창업':'#d97706','기타':'#9ca3af'},TB={'취업':'b-bl','진학':'b-pu','창업':'b-am','기타':'b-gy'};
+const NOW=2026;
+const FORMS={
+ 취업:[['기관 유형','sel',['대기업','중견기업','중소기업','공공기관','연구기관','대학·교육기관','해외기업']],['기관명','txt'],['부서 / 직위','txt'],['직무 분야','sel',['R&D','경영·기획','마케팅·영업','데이터·AI','재무·회계','컨설팅','교육·연구']],['입사일','date'],['고용 형태','sel',['정규직','계약직','파견·기타']],['전공 일치도','sel',['매우 일치','대체로 일치','보통','불일치']],['연봉 구간(선택)','sel',['비공개','3천만원 미만','3~5천만원','5~7천만원','7천만원 이상']]],
+ 진학:[['진학 학교','txt'],['진학 과정','sel',['박사','박사후과정','학사편입','해외 석·박사']],['전공','txt'],['입학일','date'],['국가','sel',['국내','해외']],['장학금 수혜','sel',['예','아니오']]],
+ 창업:[['기업명','txt'],['사업자등록번호','txt'],['업종','txt'],['설립일','date'],['상시 근로자 수','txt'],['연 매출 구간','sel',['1억 미만','1~10억','10~50억','50억 이상']],['투자 유치','sel',['없음','시드','시리즈A 이상','정부지원']]],
+ 기타:[['구분','sel',['구직 중','군복무','연구원·인턴','육아·휴식','해외체류','기타']],['세부 내용','txt']]
+};
+const DET={
+ 취업:[['삼성전자','대기업'],['LG CNS','대기업'],['한국개발연구원(KDI)','공공기관'],['네이버','대기업'],['한국은행','공공기관'],['딜로이트 안진','중견기업'],['한국조세재정연구원','연구기관'],['현대자동차','대기업'],['쿠팡','대기업'],['KB국민은행','대기업']],
+ 진학:[['고려대학교 박사과정'],['KAIST 박사과정'],['MIT Sloan 박사']],
+ 창업:[['(주)데이터브릿지'],['핀로직스']],기타:[['구직 중'],['군복무']]};
+const N=['김도윤','이하린','박지호','최서윤','정우진','강민서','조예린','윤태양','임수아','한지우','송민재','오유진','서동현','권나연','배준영','홍다은','문시우','신하준'];
+const D=[['경영학과','박사'],['AI경영학과','석사'],['데이터사이언스학과','통합'],['경영학과','석사'],['마케팅학과','석사'],['회계학과','박사'],['재무학과','석사'],['국제경영학과','석사'],['경영정보학과','통합']];
+const TY=['취업','취업','진학','취업','취업','창업','취업','진학','취업','기타','취업','취업','진학','취업','창업','취업','취업','기타'];
+const GY=[2025,2025,2025,2025,2025,2025,2023,2023,2023,2023,2023,2021,2021,2021,2021,2024,2022,2022];
+const SV=['회신','열람','발송','회신','발송','열람','회신','발송','회신','반송','열람','회신','발송','발송','열람','','',''];
+let ci=0,cp=0,cc=0,cq=0;
+const G=N.map((n,i)=>{const t=TY[i],pool=DET[t],d=pool[(t==='취업'?ci++:t==='진학'?cp++:t==='창업'?cc++:cq++)%pool.length];
+  const dept=D[i%D.length],rep=SV[i]==='회신';const g={id:i,n,sid:`${GY[i]-2}${String(10+i%4)}0${String(100+i*7).slice(-3)}`,dept:dept[0],prog:dept[1],gy:GY[i],email:`${['dyyoon','harin','jiho','seoyun','woojin','minseo','yerin','taeyang','sua','jiwoo','minjae','yujin','donghyun','nayeon','junyoung','daeun','siwoo','hajun'][i]}@gmail.com`,
+   type:t,org:d[0],org2:d[1]||'',hist:[],svy:{st:SV[i],sent:SV[i]?`2026-10-05 09:00`:'',open:(SV[i]==='열람'||SV[i]==='회신')?`2026-10-0${6+i%3} ${10+i%8}:${10+i%5*7}`:'',rep:rep?`2026-10-0${6+i%3} ${10+i%8}:${20+i%5*7}`:'',rs:(i%5===2&&SV[i]!=='회신')?1:0}};
+  const stamp=`2026-10-0${6+i%3} ${10+i%8}:${20+i%5*7}`;
+  if(i<15){ // 본인/링크 입력
+    if(SV[i]==='회신'||i%3===0||i>=15) g.hist.push({who:'link',by:g.n+' (설문 링크)',at:stamp,type:t,text:g.org+(g.org2?` · ${g.org2}`:'')});
+    else if(i%2===0) g.hist.push({who:'self',by:g.n+' (본인)',at:`2026-09-${10+i}  14:0${i%9}`,type:t,text:g.org+(g.org2?` · ${g.org2}`:'')});
+  }
+  if(g.hist.length===0&&i<15){}
+  return g});
+// 관리자 보완 입력 사례
+G[4].hist=[{who:'admin',by:'경영대학원 행정팀 (관리자)',at:'2026-10-15 11:02',type:'취업',text:G[4].org+' · 전화 확인(근거: 동문회 명부)'}];
+G[9].hist=[{who:'admin',by:'학과 사무실 (관리자)',at:'2026-10-12 16:40',type:'기타',text:'구직 중 · 면담 확인'}];
+G[2].hist=[{who:'link',by:'박지호 (설문 링크)',at:'2026-10-07 10:20',type:'진학',text:'고려대학교 박사과정'},{who:'admin',by:'대학원 학사팀 (관리자)',at:'2026-10-14 09:15',type:'진학',text:'고려대학교 박사과정 · 입학일(2026-03-02) 보완'}];
+G[7].hist=[{who:'self',by:'조예린 (본인)',at:'2026-09-22 13:10',type:'취업',text:'딜로이트 안진 · 중견기업'},{who:'admin',by:'학과 사무실 (관리자)',at:'2026-10-16 10:30',type:'진학',text:'KAIST 박사과정 · 타 경로 정보로 별도 기록(본인값 유지)'}];
+G.forEach(g=>{ // 기본 이력 보정: 이력 비어있으면 미등록
+  if(!g.hist.length){g.type='미등록';g.org='';g.org2=''}});
+G[16].hist=[{who:'admin',by:'대학원 학사팀 (관리자)',at:'2026-09-30 15:00',type:'취업',text:'한국조세재정연구원 · 연구기관'}];G[16].type='취업';G[16].org='한국조세재정연구원';
+const lastBy=g=>{const sf=g.hist.filter(h=>h.who!=='admin');return sf.length?sf[sf.length-1]:(g.hist[g.hist.length-1]||null)};
+const SRC={self:['본인 입력','b-gr'],link:['본인 입력(링크)','b-gr'],admin:['관리자 보완','b-bl']};
+const yrOf=g=>NOW-g.gy;
+
+/* ───── 통계 ───── */
+const TREND=[['1년차',[62,18,6,14]],['3년차',[68,14,9,9]],['5년차',[70,10,13,7]]];
+(function(){
+  const W=560,H=250,L=36,B=34,T=12,bw=70,gw=(W-L)/3;let g='';
+  [0,25,50,75,100].forEach(v=>{const y=T+(H-T-B)*(1-v/100);g+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#eee"/><text x="${L-6}" y="${y+4}" font-size="10" fill="#999" text-anchor="end">${v}%</text>`});
+  TREND.forEach((t,i)=>{let y0=H-B;const x=L+gw*i+(gw-bw)/2;t[1].forEach((v,j)=>{const h=(H-T-B)*v/100;y0-=h;g+=`<rect x="${x}" y="${y0}" width="${bw}" height="${h}" fill="${TC[TYPES[j]]}"><title>${t[0]} ${TYPES[j]} ${v}%</title></rect>`;if(v>=6)g+=`<text x="${x+bw/2}" y="${y0+h/2+4}" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">${v}%</text>`});g+=`<text x="${x+bw/2}" y="${H-12}" font-size="12" font-weight="600" text-anchor="middle" fill="#444">${t[0]}</text>`});
+  // 연결선(취업)
+  let pts=TREND.map((t,i)=>[L+gw*i+gw/2,H-B-(H-T-B)*t[1][0]/100/1]);
+  $('#cStack').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+  $('#lgStack').innerHTML=TYPES.map(t=>`<span><i style="background:${TC[t]}"></i>${t}</span>`).join('');
+})();
+$('#cResp').innerHTML=[['1년 차',71,'(2025 졸업 · 대상 98명)'],['3년 차',58,'(2023 졸업 · 대상 86명)'],['5년 차',44,'(2021 졸업 · 대상 79명)']].map(r=>`<div><div class="row small" style="justify-content:space-between"><b>${r[0]} 회신율</b><span><b>${r[1]}%</b> <span class="muted">${r[2]}</span></span></div><div class="bar" style="margin-top:4px;height:10px"><i style="width:${r[1]}%;background:${r[1]>=60?'#16a34a':r[1]>=50?'#d97706':'#B23A3C'}"></i></div></div>`).join('')+'<div class="note info"><span data-i="info"></span><div>연차가 길수록 회신율이 낮아지는 경향이 있어 <b>미회신자 재발송 및 관리자 보완 입력</b>으로 확보율을 높입니다.</div></div>';
+lines($('#cCohort'),['2019','2020','2021','2022','2023','2024','2025'],[{name:'취업률',color:'#2563eb',values:[61,58,60,64,66,67,66]},{name:'진학+창업 포함',color:'#7E191B',values:[84,82,86,88,89,90,90]}],{min:40,max:100,unit:'%',val:false,h:250});
+$('#cOrg').innerHTML=[['대기업',31],['공공기관·연구소',24],['중견·중소기업',22],['대학·교육기관',13],['해외기업',6],['기타',4]].map(r=>`<div class="bar-row" style="grid-template-columns:110px 1fr 40px"><span class="n">${r[0]}</span><div class="bar"><i style="width:${r[1]*2.4}%"></i></div><span class="v">${r[1]}%</span></div>`).join('');
+donut($('#cSrc'),[{name:'본인(링크 포함)',v:72,color:'#16a34a'},{name:'관리자 보완',v:28,color:'#2563eb'}],['72%','본인 입력']);
+$('#lgSrc').innerHTML='<span><i style="background:#16a34a"></i>본인 72%</span><span><i style="background:#2563eb"></i>관리자 보완 28%</span>';
+$('#tStat').innerHTML=`<thead><tr><th>졸업 연차</th><th class="c">조사 대상</th><th class="c">회신(본인)</th><th class="c">보완 입력</th><th class="c">확보율</th><th class="c">취업</th><th class="c">진학</th><th class="c">창업</th><th class="c">기타</th></tr></thead><tbody>
+ ${[['1년 차',98,70,12,'83.7%',62,18,6,14],['3년 차',86,50,15,'75.6%',68,14,9,9],['5년 차',79,35,17,'65.8%',70,10,13,7]].map(r=>`<tr><td class="bold">${r[0]}</td><td class="c">${r[1]}</td><td class="c">${r[2]}</td><td class="c">${r[3]}</td><td class="c bold">${r[4]}</td><td class="c">${r[5]}%</td><td class="c">${r[6]}%</td><td class="c">${r[7]}%</td><td class="c">${r[8]}%</td></tr>`).join('')}</tbody>`;
+
+/* ───── 목록 ───── */
+function detTxt(g){return g.type==='미등록'?'<span class="muted">-</span>':`${g.org}${g.org2?` <span class="muted small">(${g.org2})</span>`:''}`}
+function drawList(){
+  const q=$('#lq').value.trim(),ty=$('#lType').value,yr=$('#lYr').value,sr=$('#lSrc').value;
+  const L=G.filter(g=>{const lb=lastBy(g);return(!q||g.n.includes(q)||g.sid.includes(q)||g.org.includes(q))&&(!ty||g.type===ty)&&(!yr||String(g.gy)===yr)&&(!sr||(lb&&((sr==='본인')===(lb.who!=='admin'))))});
+  $('#lCnt').textContent=`총 ${L.length}명 (표본)`;
+  $('#lBody').innerHTML=L.map(g=>{const lb=lastBy(g);return`<tr><td class="bold">${g.n}</td><td>${g.sid}</td><td>${g.dept} · ${g.prog}</td><td class="c">${g.gy}</td><td class="c">${yrOf(g)}년차${[1,3,5].includes(yrOf(g))?' <span class="badge b-pr">대상</span>':''}</td><td>${g.type==='미등록'?'<span class="badge b-rd">미등록</span>':`<span class="badge ${TB[g.type]}">${g.type}</span>`}</td><td>${detTxt(g)}</td><td>${lb?`<span class="badge ${SRC[lb.who][1]}">${SRC[lb.who][0]}</span>`:'<span class="muted">-</span>'}</td><td class="muted small">${lb?lb.at:'-'}</td><td class="c"><button class="btn xs" onclick="openReg(${g.id},'${g.type==='미등록'?'admin':'self'}')">${g.type==='미등록'?'보완입력':'보기·수정'}</button></td></tr>`}).join('')||'<tr><td colspan="10" class="c muted" style="padding:28px">조회 결과 없음</td></tr>';
+}
+['lq','lType','lYr','lSrc'].forEach(i=>$('#'+i).oninput=drawList);drawList();
+
+/* ───── 등록/수정 모달 ───── */
+let RG={id:null,who:'admin',type:'취업'};
+$('#rgStu').innerHTML=G.map(g=>`<option value="${g.id}">${g.n} · ${g.sid} (${g.dept})</option>`).join('');
+function formHtml(t){return FORMS[t].map(f=>`<div class="field"><label>${f[0]}</label>${f[1]==='sel'?`<select class="select">${f[2].map(o=>`<option>${o}</option>`).join('')}</select>`:`<input class="input" type="${f[1]==='date'?'date':'text'}" ${f[0]==='기관명'||f[0]==='진학 학교'||f[0]==='기업명'?'id="fMain"':''}>`}</div>`).join('')}
+function drawType(){$('#rgType').innerHTML=TYPES.map(t=>`<label class="chk" style="border:1px solid ${RG.type===t?'var(--primary)':'var(--border)'};background:${RG.type===t?'var(--primary-10)':'#fff'};padding:7px 14px;border-radius:8px;cursor:pointer"><input type="radio" name="rt" ${RG.type===t?'checked':''} onchange="RG.type='${t}';drawType()">${t}</label>`).join('');
+  const g=G.find(x=>x.id===RG.id);$('#rgForm').innerHTML=`<div class="grid g2" style="gap:10px">${formHtml(RG.type)}</div>`;
+  if(g&&g.type===RG.type&&RG.who==='self'){const m=$('#fMain');if(m)m.value=g.org}}
+function drawWho(){$$('#rgWho .tab').forEach(b=>b.classList.toggle('on',b.dataset.w===RG.who));
+  $('#rgWhoNote').className='note '+(RG.who==='self'?'ok':'info');
+  $('#rgWhoNote').innerHTML=RG.who==='self'?'<span data-i="user"></span><div>졸업생 본인이 로그인 후(또는 설문 링크로) 직접 입력하는 경로입니다. 입력 주체·일시가 이력에 기록됩니다.</div>':'<span data-i="shield"></span><div>학과·대학원 관리자의 <b>보완 입력</b>입니다. 저장해도 <b>본인 입력값은 변경되지 않고</b> 별도 이력으로 추가됩니다.</div>';hydrateIcons()}
+$$('#rgWho .tab').forEach(b=>b.onclick=()=>{RG.who=b.dataset.w;drawWho()});
+function drawHist(){const g=G.find(x=>x.id===RG.id);
+  const selfL=g&&g.hist.filter(h=>h.who!=='admin').slice(-1)[0],admL=g&&g.hist.filter(h=>h.who==='admin').slice(-1)[0];
+  const box=(t,h,c)=>`<div style="border:1px solid var(--border);border-radius:8px;padding:10px;background:${h?'#fff':'#faf7f7'}"><div class="small bold" style="color:${c}">${t}</div>${h?`<div style="font-size:13px;margin-top:3px"><span class="badge ${TB[h.type]}">${h.type}</span> ${h.text.split(' · ')[0]}</div><div class="muted small" style="margin-top:2px">${h.at}</div>`:'<div class="muted small" style="margin-top:6px">입력 없음</div>'}</div>`;
+  $('#rgCmp').innerHTML=box('본인 입력값(최신)',selfL,'#15803d')+box('관리자 보완값(최신)',admL,'#1d4ed8');
+  $('#rgHist').innerHTML=g&&g.hist.length?[...g.hist].reverse().map(h=>`<div class="tl ${h.who==='admin'?'admin':''}"><div class="h"><span class="badge ${SRC[h.who][1]}">${SRC[h.who][0]}</span><b>${h.by}</b><span class="muted small">${h.at}</span></div><div class="b"><span class="badge ${TB[h.type]}">${h.type}</span> ${h.text}</div></div>`).join('')+(g.hist.length?`<div class="tl sys"><div class="h"><span class="badge b-gy">시스템</span><span class="muted small">졸업 ${g.gy}년 · 졸업생 정보 연계 등록</span></div></div>`:''):'<div class="muted small">등록된 이력이 없습니다. 첫 입력이 이력으로 기록됩니다.</div>'}
+function openReg(id,who){RG.id=id==null?G.find(g=>g.type==='미등록').id:id;RG.who=who;const g=G.find(x=>x.id===RG.id);RG.type=g.type==='미등록'?'취업':g.type;
+  $('#rgStu').value=RG.id;$('#rgTitle').textContent=id==null?'진로 정보 등록':`${g.n} · 진로 정보`;$('#rgSub').textContent=`${g.dept} · ${g.prog} · ${g.gy}년 졸업 (${yrOf(g)}년 차)`;
+  drawWho();drawType();drawHist();openModal('m-reg')}
+$('#rgStu').onchange=e=>{RG.id=+e.target.value;const g=G.find(x=>x.id===RG.id);$('#rgSub').textContent=`${g.dept} · ${g.prog} · ${g.gy}년 졸업 (${yrOf(g)}년 차)`;drawHist()};
+function saveReg(){const g=G.find(x=>x.id===RG.id),m=$('#fMain'),now='2026-10-17 '+String(9+Math.floor(Math.random()*8)).padStart(2,'0')+':'+String(Math.floor(Math.random()*60)).padStart(2,'0');
+  const txt=(m&&m.value)||'(세부 입력 내용)';
+  g.hist.push({who:RG.who,by:RG.who==='admin'?'경영대학원 행정팀 (관리자)':g.n+' (본인)',at:now,type:RG.type,text:txt});
+  if(RG.who==='self'||g.type==='미등록'||!g.hist.some(h=>h.who!=='admin')){g.type=RG.type;g.org=txt;g.org2=''}
+  if(g.svy.st&&g.svy.st!=='회신'&&RG.who==='admin'){g.svy.st='보완';}
+  drawHist();drawList();drawSvy();toast(RG.who==='admin'?'관리자 보완 입력이 별도 이력으로 저장되었습니다 (본인 입력값 유지)':'본인 입력 이력이 저장되었습니다')}
+
+/* ───── 추적조사 ───── */
+const T_ST={'회신':'b-gr','열람':'b-bl','발송':'b-gy','반송':'b-rd','보완':'b-in','':'b-gy'};
+function drawSvy(){
+  const T=G.filter(g=>[1,3,5].includes(yrOf(g)));
+  const f=$('#sf').value;
+  const sent=T.filter(g=>g.svy.sent).length,opened=T.filter(g=>g.svy.open).length,rep=T.filter(g=>g.svy.rep).length;
+  $('#s1').textContent=sent;$('#s2').textContent=opened;$('#s2s').textContent=`열람률 ${Math.round(opened/(sent||1)*100)}%`;$('#s3').textContent=rep;$('#s3s').textContent=`회신률 ${Math.round(rep/(sent||1)*100)}%`;
+  $('#s4').textContent=T.filter(g=>!g.svy.rep&&g.svy.st!=='보완').length;
+  $('#sBody').innerHTML=T.filter(g=>!f||g.svy.st===f).map(g=>{const s=g.svy,nr=!s.rep&&s.st!=='보완';return`<tr><td class="bold">${g.n}</td><td class="c">${yrOf(g)}년</td><td class="small">${g.email}</td><td class="small muted">${s.sent||'-'}</td><td class="small muted">${s.open||'-'}</td><td class="small muted">${s.rep||'-'}</td><td class="c">${s.rs}회</td><td class="c"><span class="badge ${T_ST[s.st]}">${s.st==='보완'?'관리자 보완':s.st||'미발송'}</span></td><td class="c" style="white-space:nowrap">${nr?`<button class="btn xs" onclick="resend(${g.id})"><span data-i="refresh" data-c="sm"></span>재발송</button> <button class="btn xs" onclick="openReg(${g.id},'admin')">보완입력</button>`:s.st==='회신'?'<span class="small muted">자동 반영됨</span>':'<span class="small muted">완료</span>'}</td></tr>`}).join('');
+  hydrateIcons()}
+function resend(id){const g=G.find(x=>x.id===id);g.svy.rs++;g.svy.st=g.svy.st==='반송'?'반송':'발송';g.svy.sent='2026-10-17 10:00';drawSvy();toast(g.n+' 님에게 재발송했습니다 (동일 토큰 유지)')}
+function resendAll(){const T=G.filter(g=>[1,3,5].includes(yrOf(g))&&!g.svy.rep&&g.svy.st!=='보완'&&g.svy.st!=='반송');T.forEach(g=>{g.svy.rs++;g.svy.sent='2026-10-17 10:00'});drawSvy();toast(`미회신자 ${T.length}명에게 일괄 재발송했습니다 (반송 메일 제외)`)}
+function sendAll(){toast('연차 대상 졸업생 고유 링크(토큰)를 생성하고 이메일을 발송했습니다')}
+$('#sf').onchange=drawSvy;drawSvy();
+
+hydrateIcons();</script>
+</body>
+</html>

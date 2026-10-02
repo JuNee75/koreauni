@@ -1,0 +1,172 @@
+      <div class="page-head">
+        <div>
+          <h1>진로 트랙 검사 관리</h1>
+          <p>기 구축된 역량관리시스템(핵심역량·학습연구역량)에 진로 트랙 검사를 추가 탑재하고, 판정 알고리즘 및 결과 대시보드를 운영합니다.</p>
+        </div>
+        <div class="row">
+          <span class="badge b-am">검사 상태: 산출물 인도 대기</span>
+          <select class="select" id="round"><option>2027학년도 1학기 (예정)</option><option>2026학년도 2학기 (시범·샘플)</option></select>
+        </div>
+      </div>
+
+      <div class="note warn">
+        <span data-i="info"></span>
+        <div><b>산출물 연계 안내</b> · 진로 트랙 검사의 <b>문항 및 판정 알고리즘은 별도 용역(2026.12월 완료 예정)</b>의 산출물을 인도받아 적용합니다. 본 시스템은 해당 산출물의 <b>탑재 · 검증 · 운영</b> 기능을 제공하며, 아래 화면의 문항·알고리즘 값은 <b>설계 확인용 샘플</b>입니다.</div>
+      </div>
+
+      <div class="tabs" data-tabs="#panes">
+        <button class="tab on" data-pane="t-ops"><span data-i="layers"></span>검사 운영·탑재</button>
+        <button class="tab" data-pane="t-items"><span data-i="file"></span>설문 문항 관리</button>
+        <button class="tab" data-pane="t-algo"><span data-i="code"></span>판정 알고리즘</button>
+        <button class="tab" data-pane="t-dash"><span data-i="bar"></span>결과 대시보드</button>
+      </div>
+
+      <div id="panes">
+      <!-- ① 운영·탑재 -->
+      <section class="pane on" id="t-ops">
+        <div class="card">
+          <div class="card-h"><h3>산출물 탑재 · 검증 절차</h3><span class="desc">별도 용역 산출물 → 탑재 → 검증 → 배포</span></div>
+          <div class="card-b">
+            <div class="steps">
+              <div class="step done"><span class="n">STEP 1</span><b>산출물 인도</b><span class="muted">문항집·알고리즘 명세서 수령</span><div class="small" style="margin-top:4px">예정 2026.12</div></div>
+              <div class="step cur"><span class="n">STEP 2</span><b>문항 탑재</b><span class="muted">엑셀/JSON 일괄 등록</span><div class="small" style="margin-top:4px">샘플 36문항 등록됨</div></div>
+              <div class="step"><span class="n">STEP 3</span><b>알고리즘 탑재</b><span class="muted">판정 규칙·가중치 설정</span><div class="small" style="margin-top:4px">샘플 v0.1</div></div>
+              <div class="step"><span class="n">STEP 4</span><b>검증(테스트)</b><span class="muted">기준 케이스 일치율 확인</span><div class="small" style="margin-top:4px">미실시</div></div>
+              <div class="step"><span class="n">STEP 5</span><b>배포·운영</b><span class="muted">학습자 설문 공개</span><div class="small" style="margin-top:4px">미배포</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g-21">
+          <div class="card">
+            <div class="card-h"><h3>산출물 탑재</h3><span class="desc">파일 업로드 시 자동 유효성 검사</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:14px">
+              <div style="border:2px dashed #d9c9c9;border-radius:10px;padding:26px;text-align:center;background:#fcfafa">
+                <span data-i="up" data-c="lg"></span>
+                <div class="bold" style="margin-top:6px">문항집(.xlsx) · 알고리즘 명세(.json) 파일을 끌어다 놓거나 선택하세요</div>
+                <div class="muted small" style="margin:4px 0 12px">문항ID·영역·문항내용·척도·역문항 여부·가중치 컬럼 필수</div>
+                <button class="btn pri" onclick="toast('샘플 산출물 검증을 시작합니다')">파일 선택</button>
+                <button class="btn" onclick="toast('양식을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>업로드 양식</button>
+              </div>
+              <div class="tbl-wrap"><table class="tbl">
+                <thead><tr><th>탑재 이력</th><th>구분</th><th>버전</th><th>등록일시</th><th>등록자</th><th class="c">검증</th></tr></thead>
+                <tbody>
+                  <tr><td>진로트랙_문항집_sample.xlsx</td><td>문항</td><td>v0.1</td><td>2026-10-02 10:21</td><td>관리자</td><td class="c"><span class="badge b-gr">형식 통과</span></td></tr>
+                  <tr><td>진로트랙_판정규칙_sample.json</td><td>알고리즘</td><td>v0.1</td><td>2026-10-02 10:24</td><td>관리자</td><td class="c"><span class="badge b-am">케이스 미검증</span></td></tr>
+                  <tr><td class="muted">(별도 용역 산출물 · 2026.12 인도 예정)</td><td>문항/알고리즘</td><td>v1.0</td><td>-</td><td>-</td><td class="c"><span class="badge b-gy">대기</span></td></tr>
+                </tbody></table></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>검사 회차 설정</h3></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div class="field"><label>검사명</label><input class="input" value="진로 트랙 검사 (2027학년도 1학기)"></div>
+              <div class="grid g2" style="gap:10px"><div class="field"><label>응시 시작일</label><input class="input" type="date" value="2027-03-02"></div><div class="field"><label>응시 종료일</label><input class="input" type="date" value="2027-03-31"></div></div>
+              <div class="field"><label>응시 대상</label><select class="select"><option>전체 재학생</option><option>신입생(입학 1학기)</option><option>수료·졸업예정자</option></select></div>
+              <div class="field"><label>재응시 허용</label><select class="select"><option>학기당 1회</option><option>제한 없음</option></select></div>
+              <label class="chk"><input type="checkbox" checked>결과를 통합 프로파일·마이페이지에 자동 반영</label>
+              <label class="chk"><input type="checkbox" checked>검증 완료 후에만 학습자에게 공개</label>
+              <button class="btn pri" onclick="toast('검사 회차 설정이 저장되었습니다')">저장</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ② 문항 -->
+      <section class="pane" id="t-items">
+        <div class="card">
+          <div class="card-h"><h3>설문 문항 목록 <span class="badge b-gy">샘플 36문항 · 6개 영역</span></h3>
+            <div class="row"><select class="select" id="itemArea"><option value="">전체 영역</option></select><button class="btn" onclick="openModal('m-prev')"><span data-i="eye" data-c="sm"></span>학습자 화면 미리보기</button><button class="btn pri" onclick="toast('문항 추가 폼이 열립니다')"><span data-i="plus" data-c="sm"></span>문항 추가</button></div></div>
+          <div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th style="width:70px">문항ID</th><th style="width:130px">영역</th><th>문항 내용</th><th style="width:90px">척도</th><th class="c" style="width:70px">역문항</th><th class="c" style="width:70px">가중치</th><th class="c" style="width:90px">관리</th></tr></thead><tbody id="itemBody"></tbody></table></div></div>
+        </div>
+        <div class="note info"><span data-i="info"></span><div>문항은 별도 용역 산출물 탑재 후 <b>읽기 전용(버전 고정)</b>으로 전환되며, 이후 수정은 새 버전(v1.1…) 탑재로만 가능합니다. 응시 이력이 있는 문항은 삭제할 수 없습니다.</div></div>
+      </section>
+
+      <!-- ③ 알고리즘 -->
+      <section class="pane" id="t-algo">
+        <div class="grid g-21">
+          <div class="card">
+            <div class="card-h"><h3>판정 알고리즘 구성 <span class="badge b-am">샘플 v0.1</span></h3><button class="btn sm" onclick="toast('알고리즘 명세(JSON)를 내보냅니다')"><span data-i="dl" data-c="sm"></span>명세 내보내기</button></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:16px">
+              <div class="steps">
+                <div class="step"><span class="n">①</span><b>문항 응답 수집</b>5점 척도, 역문항 반전</div>
+                <div class="step"><span class="n">②</span><b>영역 점수 산출</b>가중 평균 → 100점 환산</div>
+                <div class="step"><span class="n">③</span><b>트랙 적합도</b>영역 점수 × 트랙 계수</div>
+                <div class="step"><span class="n">④</span><b>판정</b>1순위·2순위, 동점 규칙</div>
+              </div>
+              <div>
+                <h3 style="margin-bottom:8px">트랙별 판정 기준</h3>
+                <div class="tbl-wrap"><table class="tbl"><thead><tr><th>진로 트랙</th><th>핵심 영역</th><th class="c">주 영역 계수</th><th class="c">보조 영역 계수</th><th class="c">판정 하한</th></tr></thead><tbody id="algoBody"></tbody></table></div>
+              </div>
+              <div class="grid g3">
+                <div class="field"><label>동점 처리 기준</label><select class="select"><option>최근 응답 일관성 우선</option><option>주 영역 점수 우선</option><option>복수 트랙(동률) 표시</option></select></div>
+                <div class="field"><label>혼합형 판정 차이(점)</label><input class="input" value="5"></div>
+                <div class="field"><label>응답 신뢰도 하한(%)</label><input class="input" value="70"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3>알고리즘 시뮬레이터</h3><span class="desc">영역 점수 입력 → 판정 확인</span></div>
+            <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+              <div id="sliders" style="display:flex;flex-direction:column;gap:8px"></div>
+              <div class="divider"></div>
+              <div id="simOut"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h3>검증(기준 케이스 테스트)</h3><button class="btn pri" onclick="runVerify()"><span data-i="check" data-c="sm"></span>검증 실행</button></div>
+          <div class="card-b">
+            <div class="muted small" style="margin-bottom:10px">용역 산출물에 포함된 기준 응답 세트의 기대 판정과 시스템 판정을 비교해 일치율을 확인합니다. (샘플 케이스 6건)</div>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr><th>케이스</th><th>입력 요약</th><th>기대 판정</th><th>시스템 판정</th><th class="c">결과</th></tr></thead><tbody id="verifyBody"></tbody></table></div>
+            <div id="verifySum" class="note info" style="margin-top:12px;display:none"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④ 대시보드 -->
+      <section class="pane" id="t-dash">
+        <div class="card"><div class="card-b row">
+          <b>조회 조건</b>
+          <select class="select"><option>2026학년도 2학기 (시범)</option><option>2027학년도 1학기</option></select>
+          <select class="select" id="fDept"><option value="">전체 학과</option></select>
+          <select class="select" id="fProg"><option value="">전체 과정</option><option>석사</option><option>박사</option><option>통합</option></select>
+          <select class="select" id="fYear"><option value="">전체 입학연도</option><option>2023</option><option>2024</option><option>2025</option></select>
+          <span class="spacer"></span><button class="btn" onclick="toast('엑셀을 다운로드합니다')"><span data-i="dl" data-c="sm"></span>엑셀 다운로드</button>
+        </div></div>
+
+        <div class="grid g4">
+          <div class="card kpi"><div class="ic bg-p"><span data-i="users" data-c="lg"></span></div><div><div class="l">응시 대상</div><div class="v" id="k1">-</div><div class="s">재학생 기준</div></div></div>
+          <div class="card kpi"><div class="ic bg-g"><span data-i="check" data-c="lg"></span></div><div><div class="l">응시 완료</div><div class="v" id="k2">-</div><div class="s" id="k2s"></div></div></div>
+          <div class="card kpi"><div class="ic bg-b"><span data-i="target" data-c="lg"></span></div><div><div class="l">최다 트랙</div><div class="v" id="k3" style="font-size:19px">-</div><div class="s" id="k3s"></div></div></div>
+          <div class="card kpi"><div class="ic bg-a"><span data-i="spark" data-c="lg"></span></div><div><div class="l">혼합형(1·2순위 근접)</div><div class="v" id="k4">-</div><div class="s">판정 차이 5점 이내</div></div></div>
+        </div>
+
+        <div class="grid g3">
+          <div class="card"><div class="card-h"><h3>진로 트랙 분포</h3></div><div class="card-b"><div id="cDonut" class="chart"></div><div class="legend" id="lgDonut" style="justify-content:center;margin-top:8px"></div></div></div>
+          <div class="card"><div class="card-h"><h3>전체 평균 프로파일</h3><span class="desc">6개 영역 평균</span></div><div class="card-b chart" id="cRadar"></div></div>
+          <div class="card"><div class="card-h"><h3>학과별 트랙 구성</h3><span class="desc">1순위 기준 (%)</span></div><div class="card-b" id="cDept" style="display:flex;flex-direction:column;gap:12px"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h3>학생별 검사 결과</h3><div class="row"><input class="input" id="q" placeholder="이름·학번 검색" style="width:200px"></div></div>
+          <div class="card-b"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>이름</th><th>학번</th><th>학과</th><th>과정</th><th>입학</th><th>1순위 트랙</th><th>2순위 트랙</th><th class="c">적합도</th><th>응시일</th><th class="c">상세</th></tr></thead><tbody id="stuBody"></tbody></table></div></div>
+        </div>
+      </section>
+      </div>
+
+      <!-- 결과 상세 -->
+      <div class="overlay" id="m-res"><div class="modal">
+        <div class="modal-h"><h2 id="mrTitle">진로 트랙 결과</h2><button class="x" onclick="closeModal('m-res')">×</button></div>
+        <div class="modal-b" id="mrBody"></div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-res')">닫기</button></div>
+      </div></div>
+      <!-- 미리보기 -->
+      <div class="overlay" id="m-prev"><div class="modal">
+        <div class="modal-h"><h2>학습자 응시 화면 미리보기</h2><button class="x" onclick="closeModal('m-prev')">×</button></div>
+        <div class="modal-b">
+          <div class="note pri"><span data-i="compass"></span><div><b>진로 트랙 검사</b> · 각 문항에 대해 자신과 가장 가까운 정도를 선택하세요. (소요 약 10분)</div></div>
+          <div id="prevBody" style="display:flex;flex-direction:column;gap:14px"></div>
+        </div>
+        <div class="modal-f"><button class="btn" onclick="closeModal('m-prev')">닫기</button></div>
+      </div></div>

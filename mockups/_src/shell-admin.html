@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}} | 고려대학교 대학원 역량관리시스템</title>
+<style>/*COMMON_CSS*/
+{{CSS}}</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><img src="../public/images/logo_on.png" alt="고려대학교 로고"></div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <div class="main">
+    <header class="header">
+      <div class="t"><span data-i="{{ICON}}"></span>{{HEADER}}</div>
+      <div class="r">
+        <a class="btn sm" href="learner-mypage.html">사용자모드로 전환</a>
+        <span style="position:relative;display:flex"><span data-i="bell"></span><i style="position:absolute;right:0;top:0;width:8px;height:8px;border-radius:50%;background:var(--destructive)"></i></span>
+        <div class="row" style="gap:8px"><div class="avatar">관</div><div style="line-height:1.2"><b style="font-size:13px">관리자</b><div class="muted" style="font-size:11.5px">admin@korea.ac.kr</div></div></div>
+      </div>
+    </header>
+    <main class="page">
+{{BODY}}
+    </main>
+  </div>
+</div>
+<div class="proto">UI 시안 · 샘플 데이터</div>
+<script>/*COMMON_JS*/
+{{JS}}
+hydrateIcons();</script>
+</body>
+</html>
